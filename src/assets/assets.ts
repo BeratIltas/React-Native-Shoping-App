@@ -1,0 +1,19 @@
+export const images = {
+  bannerOne: require('./HomePage/bannerOne.png'),
+  bannerTwo: require('./HomePage/bannerTwo.png'),
+  bannerThree: require('./HomePage/bannerThree.png'),
+  bell: require('./HomePage/Bell.png'),
+  leftArrow: require('./HomePage/LeftArrow.png'),
+  cartIcon: require('./NavigationBar/CartIcon.png'),
+  favoriesIcon: require('./NavigationBar/FavoriesIcon.png'),
+  homeIcon: require('./NavigationBar/HomeIcon.png'),
+  profileIcon: require('./NavigationBar/ProfileIcon.png'),
+  searchIcon: require('./NavigationBar/SearchIcon.png'),
+  deleteIcon: require('../assets/Search/DeleteButton.png'),
+  shareIcon: require('./ProductPage/ShareIcon.png'),
+  apparelIcon: require('../assets/HomePage/Apparel.png'),
+  electronicIcon: require('../assets/HomePage/Electronic.png'),
+  furnitureIcon: require('../assets/HomePage/Furniture.png'),
+  allIcon: require('../assets/HomePage/All.png'),
+  filters: require('../assets/Search/Filters.png')
+};
