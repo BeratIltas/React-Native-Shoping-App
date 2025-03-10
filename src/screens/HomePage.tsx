@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CategoryRow from '../components/CategoryRow';
+import AdviceProduct from '../components/AdviceProduct';
 
 const { width } = Dimensions.get('window');
 
@@ -90,6 +91,10 @@ const HomePage = () => {
                   }}
                 />
                 <CategoryRow />
+                <AdviceProduct
+                  products={productsArray}
+                  onHeartPress={handleHeartPress}
+                  likedProducts={likedProducts} />
               </View>
 
             }

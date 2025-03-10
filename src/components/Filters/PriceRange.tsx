@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import typography from "../../assets/typography";
@@ -6,12 +6,25 @@ import Colors from "../../assets/colors";
 
 const { width } = Dimensions.get("window");
 
-const PriceRange = () => {
-    const [price, setPrice] = useState([0, 2000]); 
+interface PriceRangeProps {
+    priceRange: number[];
+    onPriceChange: (price: number[]) => void;
+}
+
+const PriceRange: React.FC<PriceRangeProps> = ({ priceRange, onPriceChange }) => {
+    const [price, setPrice] = useState(priceRange);
+
+    useEffect(() => {
+        setPrice(priceRange);
+    }, [priceRange]);
+
+    const handleValuesChange = (values: number[]) => {
+        setPrice(values);
+        onPriceChange(values);
+    };
 
     return (
         <View style={styles.container}>
-            {/* Price Header */}
             <View style={styles.header}>
                 <Text style={[typography.Body3, styles.label]}>Price</Text>
                 <Text style={styles.priceText}>${price[0]} - ${price[1]}</Text>
@@ -19,9 +32,9 @@ const PriceRange = () => {
 
             <MultiSlider
                 values={price}
-                containerStyle={{paddingHorizontal: 20,alignItems:'center'}}
-                sliderLength={width*0.77}
-                onValuesChange={setPrice}
+                containerStyle={{ paddingHorizontal: 20, alignItems: "center" }}
+                sliderLength={width * 0.77}
+                onValuesChange={handleValuesChange}
                 min={0}
                 max={2000}
                 step={50}
@@ -57,24 +70,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "400",
         color: "gray",
-        paddingRight:20,
+        paddingRight: 20,
     },
     divider: {
         height: 1,
         backgroundColor: Colors.extraLightGray,
         marginVertical: 10,
         marginHorizontal: 20,
-    },
-    sizeContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    sizeText: {
-        fontSize: 14,
-        fontWeight: "400",
-        color: "black",
-        paddingRight:20,
     },
     markerStyle: {
         backgroundColor: "white",

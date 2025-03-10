@@ -9,7 +9,7 @@ const Header = () => {
   return (
       <View style={styles.containerView}>
         <TouchableOpacity>
-          <Text style={typography.Header2}>Pazarrradad</Text>
+          <Text style={[typography.Header2,styles.titleText]}>Pazar</Text>
         </TouchableOpacity>
         <TouchableOpacity>
           <Image source={images.bell} style={styles.image}></Image>
@@ -19,20 +19,34 @@ const Header = () => {
 }
 const styles = StyleSheet.create({
   containerView: {
-    paddingTop:30,
+    paddingTop: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: Colors.white,
     alignItems: 'center',
-    opacity: 1,
+    borderBottomWidth: 0.3,
+    borderBottomColor: Colors.gray,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
   },
   image: {
-    width: 24,
-    height: 24,
+    width: 30,
+    height: 30,
     resizeMode: 'contain',
-    opacity: 1
+    // tintColor: Colors.orange,
+  },
+  titleText: {
+    fontWeight: '900',
+    color: Colors.black,
+    textTransform: 'uppercase', 
+    letterSpacing: 9, 
   },
 });
+
+
 export default Header

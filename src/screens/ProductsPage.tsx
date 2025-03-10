@@ -1,32 +1,33 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import Header from '../components/Header'
-import CommonHeader from '../components/CommonHeader'
-import { images } from '../assets/assets'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useNavigation } from '@react-navigation/native'
-import ProductCard from '../components/ProductCard'
-import Colors from '../assets/colors'
-import Loader from '../components/Loader'
-import FilterOptions from '../components/Filters/FilterOptions'
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, FlatList } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CommonHeader from "../components/CommonHeader";
+import FilterOptions from "../components/Filters/FilterOptions";
+import ProductCard from "../components/ProductCard";
+import Loader from "../components/Loader";
+import Colors from "../assets/colors";
+import { images } from "../assets/assets";
 
 const ProductsPage = ({ route }: any) => {
     const category = route?.params?.category;
-    const navigation: any = useNavigation();
-    const [query, setQuery] = useState('');
-    const [productsArray, setProductsArray] = useState([]);
+    const [query, setQuery] = useState(""); 
+    const [productsArray, setProductsArray] = useState([]); 
     const [isLoading, setIsLoading] = useState(false);
     const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
-    const [sortType, setSortType] = useState<string>('mostPopular');
+    const [sortType, setSortType] = useState<string>("mostPopular");
+    const [priceRange, setPriceRange] = useState<number[]>([0, 2000]);
 
     const loadProductsFromStorage = async () => {
+        setIsLoading(true);
         try {
-            const storedData = await AsyncStorage.getItem('productData');
+            const storedData = await AsyncStorage.getItem("productData");
             if (storedData) {
                 setProductsArray(JSON.parse(storedData));
             }
         } catch (error) {
-            console.log('Error fetching data from storage:', error);
+            console.error("Error fetching data from storage:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -35,10 +36,10 @@ const ProductsPage = ({ route }: any) => {
     }, []);
 
     const sortProducts = (products: any[], type: string) => {
-        if (type === 'priceLowToHigh') {
+        if (type === "priceLowToHigh") {
             return products.sort((a, b) => a.price - b.price);
         }
-        if (type === 'priceHighToLow') {
+        if (type === "priceHighToLow") {
             return products.sort((a, b) => b.price - a.price);
         }
         return products;
@@ -52,7 +53,10 @@ const ProductsPage = ({ route }: any) => {
             const matchesQuery = query
                 ? product?.title?.toLowerCase().includes(query.toLowerCase())
                 : true;
-            return matchesCategory && matchesQuery;
+            const matchesPrice =
+                product?.price >= priceRange[0] && product?.price <= priceRange[1];  
+
+            return matchesCategory && matchesQuery && matchesPrice;
         }),
         sortType
     );
@@ -78,8 +82,14 @@ const ProductsPage = ({ route }: any) => {
 
     return (
         <View style={styles.container}>
-            <CommonHeader title={category} icon={images.bell} page='MainApp'/>
-            <FilterOptions onSort={handleSort} />
+            <CommonHeader title={category} icon={images.bell} page="MainApp" />
+
+            <FilterOptions
+                onSort={handleSort}
+                onPriceChange={setPriceRange}
+                priceRange={priceRange}
+            />
+
             {isLoading ? (
                 <Loader />
             ) : (
@@ -96,14 +106,18 @@ const ProductsPage = ({ route }: any) => {
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: Colors.whiteGray,
-        paddingBottom: 100,
     },
-    columnWrapper: {},
-    listContainer: {},
+    columnWrapper: {
+        justifyContent: "space-between",
+    },
+    listContainer: {
+        paddingHorizontal: 10,
+        paddingTop: 10,
+    },
 });
 
-export default ProductsPage
+export default ProductsPage;

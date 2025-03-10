@@ -6,7 +6,7 @@ import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 type ProductCardProps = {
   item: {
@@ -32,27 +32,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 
   return (
     <View style={styles.productViewContainer}>
-      {/* Heart animation */}
-      <TouchableOpacity
-        style={styles.heart}
-        onPress={() => {
-          onHeartPress(String(item._id));
-          if (lottieRef.current) {
-            isLiked ? lottieRef.current.play(0, 1) : lottieRef.current.play();
-          }
-        }}
-      >
-        <LottieView
-          ref={lottieRef}
-          source={require('../assets/Animations/Heart.json')}
-          autoPlay={false}
-          loop={false}
+      <View style={styles.heartViewContainer}>
+        <TouchableOpacity
           style={styles.heart}
-          speed={1.5}
-        />
-      </TouchableOpacity>
+          onPress={() => {
+            onHeartPress(String(item._id));
+            if (lottieRef.current) {
+              isLiked ? lottieRef.current.play(0, 1) : lottieRef.current.play();
+            }
+          }}
+        >
+          <LottieView
+            ref={lottieRef}
+            source={require('../assets/Animations/Heart.json')}
+            autoPlay={false}
+            loop={false}
+            style={styles.heart}
+            speed={1.5}
+          />
+        </TouchableOpacity>
+      </View>
 
-      {/* Product Details */}
+
+
       <TouchableOpacity
         style={styles.productView}
         onPress={() =>
@@ -64,7 +66,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
         <Image source={{ uri: item.image }} style={styles.img} />
         <View style={styles.productDetail}>
           <View style={styles.productDetailText}>
-            {/* Product Title and Price */}
             <Text
               style={typography.Body1}
               numberOfLines={2}
@@ -79,8 +80,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
             <LottieView
               ref={addToCardRef}
               source={require("../assets/Animations/AddToCard.json")}
-              loop={false} 
-              autoPlay={false} 
+              loop={false}
+              autoPlay={false}
               style={styles.cardIcon}
             />
           </TouchableOpacity>
@@ -92,12 +93,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 
 const styles = StyleSheet.create({
   productViewContainer: {
+    height: height * 0.3,
+    width: width * 0.43,//46 tam
     flex: 1,
     backgroundColor: Colors.whiteGray
   },
+  heartViewContainer:{
+    backgroundColor:'red',
+    borderRadius:50
+
+  },
   productView: {
     flex: 1,
-    height: height * 0.3,
     borderWidth: 0.2,
     margin: 5,
     borderRadius: 10,
@@ -105,7 +112,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.black,
     backgroundColor: Colors.white,
     overflow: 'hidden',
-
   },
   img: {
     backgroundColor: Colors.white,
@@ -115,9 +121,9 @@ const styles = StyleSheet.create({
     height: '70%',
   },
   productDetail: {
-    flexDirection:'row',
+    flexDirection: 'row',
     flex: 1,
-    padding:15,
+    padding: 15,
     justifyContent: 'space-between',
   },
   heart: {
@@ -128,10 +134,10 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
-  productDetailText:{
+  productDetailText: {
     flex: 1,
     marginRight: 10,
-    marginBottom:5,
+    marginBottom: 5,
   },
   cardIcon: {
     height: 30,

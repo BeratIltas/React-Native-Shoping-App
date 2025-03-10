@@ -1,25 +1,29 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
 import Modal from "react-native-modal";
-import Slider from "@react-native-community/slider";
 import Colors from "../../assets/colors";
 import typography from "../../assets/typography";
 import SortOptions from "./SortOptions";
 import PriceRange from "./PriceRange";
-import SizeOptions from "./SizeOptions";
 
 const { width, height } = Dimensions.get("window");
 
-const ModalContent = ({
-    toggleModal,
-    onSort,
-    selectedOption,
-    setSelectedOption,
-}: {
+interface ModalContentProps {
     toggleModal: () => void;
     onSort: (type: string) => void;
+    onPriceChange: (price: number[]) => void;
     selectedOption: string;
     setSelectedOption: (option: string) => void;
+    priceRange: number[];
+}
+
+const ModalContent: React.FC<ModalContentProps> = ({
+    toggleModal,
+    onSort,
+    onPriceChange,
+    selectedOption,
+    setSelectedOption,
+    priceRange,
 }) => {
     return (
         <Modal
@@ -34,21 +38,24 @@ const ModalContent = ({
                 <Text style={[typography.Header4, styles.filtersTitle]}>Filters</Text>
                 <View style={styles.divider} />
 
-                <SortOptions selectedOption={selectedOption} onSelect={(option) => {
-                    setSelectedOption(option);
-                    onSort(option);
-                }} />
+                <SortOptions
+                    selectedOption={selectedOption}
+                    onSelect={(option) => {
+                        setSelectedOption(option);
+                        onSort(option);
+                    }}
+                />
 
-
-                <PriceRange />
-                <SizeOptions/>
+                <PriceRange priceRange={priceRange} onPriceChange={onPriceChange} />
                 <TouchableOpacity
                     style={styles.applyButton}
                     onPress={() => {
+                        onPriceChange([0, 2000]);
+                        setSelectedOption("mostPopular");
                         toggleModal();
                     }}
                 >
-                    <Text style={styles.applyButtonText}>Apply Filters</Text>
+                    <Text style={styles.applyButtonText}>Reset Filters</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
@@ -69,8 +76,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        height: height * 0.7,
-
+        height: height * 0.6,
     },
     handleBar: {
         width: 100,

@@ -24,10 +24,8 @@ const AppNavigator = () => {
       {/* <Stack.Screen name="Intro" component={Intro} />
       <Stack.Screen name="Onboarding" component={Onboarding} /> */}
       <Stack.Screen name="MainApp" component={BottomTabNavigator} />
-
       <Stack.Screen name="ProductsPage" component={ProductsPage} />   
       <Stack.Screen name="ProductDetails" component={ProductDetails} />   
-      
     </Stack.Navigator>
   );
 };

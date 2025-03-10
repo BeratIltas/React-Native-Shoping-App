@@ -1,11 +1,11 @@
-import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import CommonHeader from '../components/CommonHeader';
 import { ProductProps } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
-import LottieView from 'lottie-react-native';
+import AdviceProduct from '../components/AdviceProduct';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,6 +13,8 @@ const ProductDetails = ({ route }: any) => {
   const _id = route?.params?._id;
   const [productData, setProductsData] = useState<ProductProps | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [productsArray, setProductsArray] = useState([]);
+  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
 
   const getData = async () => {
     try {
@@ -27,13 +29,31 @@ const ProductDetails = ({ route }: any) => {
     }
   };
 
+  const fetchRelatedProducts = async () => {
+    try {
+      const response = await fetch('https://jsonserver.reactbd.com/amazonpro');
+      const json = await response.json();
+      setProductsArray(json);
+    } catch (error) {
+      console.error('Error fetching related products:', error);
+    }
+  };
+
   useEffect(() => {
     getData();
+    fetchRelatedProducts();
   }, [_id]);
+
+  const handleHeartPress = (productId: string) => {
+    setLikedProducts((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
 
   return (
     <View style={styles.container}>
-      <CommonHeader page='MainApp' title={productData?.title || "Details"} icon={images.shareIcon} />
+      <CommonHeader page="MainApp" title={productData?.title || "Details"} icon={images.shareIcon} />
 
       {isLoading ? (
         <Loader />
@@ -42,10 +62,7 @@ const ProductDetails = ({ route }: any) => {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.imgView}>
               {productData?.image && (
-                <Image
-                  source={{ uri: productData?.image }}
-                  style={styles.img}
-                />
+                <Image source={{ uri: productData?.image }} style={styles.img} />
               )}
             </View>
 
@@ -56,14 +73,16 @@ const ProductDetails = ({ route }: any) => {
               </View>
               <Text style={styles.description}>{productData?.description}</Text>
             </View>
+
+            <AdviceProduct
+              products={productsArray}
+              onHeartPress={handleHeartPress}
+              likedProducts={likedProducts}
+            />
           </ScrollView>
 
-
           <View style={styles.lottieContainer}>
-            <TouchableOpacity
-              style={styles.addToCartButton}
-              
-            >
+            <TouchableOpacity style={styles.addToCartButton}>
               <Text style={styles.buttonText}>ADD TO CART</Text>
             </TouchableOpacity>
           </View>
@@ -81,7 +100,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: Colors.white,
-    paddingBottom: height * 0.2, 
+    paddingBottom: height * 0.2,
   },
   imgView: {
     width: width,
@@ -127,18 +146,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   addToCartButton: {
-    width: "100%",
+    width: '100%',
     height: 48,
     borderRadius: 25,
     backgroundColor: Colors.orange,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
-    fontFamily: "Metropolis",
+    fontFamily: 'Metropolis',
     fontSize: 14,
-    fontWeight: "500",
-    color: "#FFF",
+    fontWeight: '500',
+    color: '#FFF',
   },
 });
 

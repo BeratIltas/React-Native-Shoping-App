@@ -48,12 +48,12 @@ const Onboarding: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // Arka plan resmi tam ekranı kapsar
+    resizeMode: 'cover',
     backgroundColor:Colors.black
   },
   container: {
     flex: 1,
-    backgroundColor: 'transparent', // Arka plan resmi görünsün diye şeffaf
+    backgroundColor: 'transparent',
   },
   animationContainer: {
     flex: 3,

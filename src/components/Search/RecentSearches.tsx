@@ -4,69 +4,91 @@ import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
 
-const RecentSearches = ({ recentSearches, clearSearches, removeSearchItem }: any) => {
+const RecentSearches = ({ recentSearches, clearSearches, removeSearchItem, setQuery }: any) => {
   const renderRecentSearchItem = ({ item }: { item: string }) => (
-    <View style={styles.recentSearchItem}>
-      <TouchableOpacity onPress={() => setQuery(item)}>
-        <Text style={[typography.Body2Regular, styles.recentSearchText]}>{item}</Text>
+    <View style={styles.searchItem}>
+
+      <TouchableOpacity style={styles.searchTextContainer} onPress={() => setQuery(item)}>
+        <Text style={styles.searchText}>{item}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => removeSearchItem(item)}>
-        <Image source={images.deleteIcon} />
+
+      <TouchableOpacity onPress={() => removeSearchItem(item)} style={styles.deleteButton}>
+        <Image source={images.deleteIcon} style={styles.deleteIcon} />
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <View>
-      <View style={styles.recentSearchesHeader}>
-        <Text style={typography.Header4}>Recent Searches</Text>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={[typography.Header4, styles.headerText]}>Recent Searches</Text>
         <TouchableOpacity onPress={clearSearches}>
-          <Text style={[typography.Body2Medium, styles.clearAllText]}>Clear all</Text>
+          <Text style={styles.clearAllText}>Clear all</Text>
         </TouchableOpacity>
       </View>
+
+      {/* List of recent searches */}
       <FlatList
         data={recentSearches}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderRecentSearchItem}
-        contentContainerStyle={styles.recentSearchesList}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
       />
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  recentSearchesHeader: {
+  container: {
+    marginHorizontal: 16,
+    marginVertical: 10,
+  },
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 10,
     marginBottom: 8,
   },
-  recentSearchesList: {
-    paddingHorizontal: 10,
-    marginBottom: 16,
-  },
-  recentSearchItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.extraLightGray,
-  },
-  recentSearchText: {
-    fontFamily: 'typography.Body2Regular',
-    paddingLeft: 10,
-    fontSize: 16,
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: Colors.black,
   },
   clearAllText: {
-    color: "#3B82F6",
+    color: '#3B82F6', // Bright accent for "Clear all"
+    fontSize: 14,
+  },
+  list: {
+    paddingBottom: 16,
+  },
+  searchItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginVertical: 6,
+    backgroundColor: Colors.whiteGray,
+    borderRadius: 10,
+  },
+  searchTextContainer: {
+    flex: 1,
+  },
+  searchText: {
+    fontSize: 16,
+    color: Colors.black,
+  },
+  deleteButton: {
+    marginLeft: 10,
+  },
+  deleteIcon: {
+    width: 20,
+    height: 20,
+    tintColor: Colors.lightGray,
   },
 });
 
 export default RecentSearches;
-function setQuery(item: string): void {
-    throw new Error('Function not implemented.');
-}
-
