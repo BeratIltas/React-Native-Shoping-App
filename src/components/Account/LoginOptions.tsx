@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import LoginScreen from './LoginScreen';
 import SignupScreen from './SignupScreen';
+import DetailsView from '../DetailsView';
 
 type LoginOptionsProps = {
   onLogin: (userData: { username: string; email: string; password: string }) => void;

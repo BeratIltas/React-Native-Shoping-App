@@ -15,5 +15,10 @@ export const images = {
   electronicIcon: require('../assets/HomePage/Electronic.png'),
   furnitureIcon: require('../assets/HomePage/Furniture.png'),
   allIcon: require('../assets/HomePage/All.png'),
-  filters: require('../assets/Search/Filters.png')
+  filters: require('../assets/Search/Filters.png'),
+  addressBook: require('../assets/Account/AddressBook.png'),
+  myOrders: require('../assets/Account/MyOrders.png'),
+  paymentMethods: require('../assets/Account/PaymentMethods.png'),
+  rightArrow: require('../assets/Account/RightArrow.png'),
+  userProfile: require('../assets/Account/UserProfile.png'),
 };

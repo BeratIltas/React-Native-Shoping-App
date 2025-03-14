@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
+import LottieView from 'lottie-react-native';
+import { assets } from '../../../react-native.config';
+
+const { width } = Dimensions.get('window');
 
 type LoginScreenProps = {
   onLogin: (userData: { username: string; email: string; password: string }) => void;
@@ -13,52 +17,51 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onSignupNavigate }) 
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    onLogin({ username: 'Guest', email, password });
+    onLogin({ username: 'Admin', email:'Admin@gmail.com', password });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={[typography.Header2, styles.title]}>Login to your account</Text>
-      <Text style={[typography.Body1Regular, styles.subtitle]}>It's great to see you again.</Text>
+      <View style={styles.upContainerBg}>
+        <View style={styles.upContainer}>
+          <LottieView
+            source={require('../../assets/Animations/AddToCard.json')}
+            style={styles.lottie}
+             />
+        </View>
+      </View>
+      <View style={styles.downContainer}>
+        <Text style={[typography.Header2, styles.title]}>Login</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input]}
+            placeholder="Enter your email address"
+            placeholderTextColor={Colors.softGray}
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            style={[styles.input]}
+            placeholder="Enter your password"
+            placeholderTextColor={Colors.softGray}
+            secureTextEntry
+            onChangeText={(text) => setPassword(text)}
+          />
+          <TouchableOpacity>
+            <Text style={[typography.Body2Medium, styles.forgotText]}>
+              Forgot your password? Reset it
+            </Text>
+          </TouchableOpacity>
 
-      <TextInput
-        style={[styles.input]}
-        placeholder="Enter your email address"
-        placeholderTextColor={Colors.softGray}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        style={[styles.input]}
-        placeholder="Enter your password"
-        placeholderTextColor={Colors.softGray}
-        secureTextEntry
-        onChangeText={(text) => setPassword(text)}
-      />
-      <TouchableOpacity>
-        <Text style={[typography.Body2Medium, styles.forgotText]}>
-          Forgot your password? Reset it
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={[typography.Body1, styles.loginText]}>Login</Text>
-      </TouchableOpacity>
-
-      <Text style={[typography.Body1Regular, styles.orText]}>Or login with</Text>
-      <View style={styles.socialButtons}>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Text style={styles.socialButtonText}>Facebook</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={[typography.Body1, styles.loginText]}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={onSignupNavigate}>
+          <Text style={[typography.Body2Medium, styles.linkText]}>
+            Don't have an account? Join
+          </Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity onPress={onSignupNavigate}>
-        <Text style={[typography.Body2Medium, styles.linkText]}>
-          Don't have an account? Join
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -66,40 +69,57 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onSignupNavigate }) 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
+    backgroundColor: Colors.darkGray,
+  },
+  upContainerBg:{
+    flex:1,
     backgroundColor: Colors.whiteGray,
-    paddingHorizontal: 20,
-    paddingVertical:35,
+  },
+  upContainer: {
+    flex: 1,
+    backgroundColor: Colors.darkGray,
+    borderBottomRightRadius: 60,
+  },
+  downContainer: {
+    flex: 1.5,
+    backgroundColor: Colors.whiteGray,
+    borderTopLeftRadius: 60,
+  },
+  inputContainer: {
+    alignItems: 'center',
   },
   title: {
-    color: Colors.black,
+    color: Colors.darkGray,
     marginBottom: 8,
-    fontWeight:'bold',
+    fontWeight: 'bold',
+    padding: 30,
+    paddingLeft:width*0.1,
+    textShadowRadius:1,
+    textShadowColor:Colors.gray,
   },
-  subtitle: {
-    color: Colors.mediumGray,
-    marginBottom: 20,
+  lottie: {
+    flex: 1,
+    marginTop:20,
   },
   input: {
-    width: '100%',
+    width: '80%',
     height: 50,
-    borderColor: Colors.extraLightGray,
+    borderColor: Colors.gray,
     borderWidth: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.whiteGray,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
     color: Colors.black,
   },
   forgotText: {
-    color: Colors.orange,
+    color: Colors.darkGray,
     textDecorationLine: 'underline',
-    alignSelf: 'flex-end',
     marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: Colors.green,
-    width: '100%',
+    backgroundColor: Colors.orange,
+    width: '80%',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -108,33 +128,17 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: Colors.white,
+    textShadowColor:Colors.whiteGray,
+    textShadowRadius:1,
   },
   orText: {
     color: Colors.gray,
     marginBottom: 20,
   },
-  socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 20,
-  },
-  socialButton: {
-    backgroundColor: Colors.ultraLightGray,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  socialButtonText: {
-    color: Colors.black,
-  },
   linkText: {
     color: Colors.darkGray,
     textDecorationLine: 'underline',
-    marginTop: 10,
+    textAlign:'center',
   },
 });
 

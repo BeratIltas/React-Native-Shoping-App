@@ -6,7 +6,6 @@ import ProductDetails from "../screens/ProductDetails";
 import BottomTabNavigator from "./BottomNavigator";
 import ProductsPage from "../screens/ProductsPage";
 
-// 👉 TypeScript için Stack parametrelerini tanımlıyoruz
 export type RootStackParamList = {
   Intro: undefined;
   Onboarding: undefined;
@@ -15,7 +14,6 @@ export type RootStackParamList = {
   ProductsPage: {category:string};
 };
 
-// Stack Navigator oluştur
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
