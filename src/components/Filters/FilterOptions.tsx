@@ -49,7 +49,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center",
+        alignItems: "center",        
         backgroundColor: Colors.white,
         borderBottomColor: Colors.lightGray,
         borderBottomWidth: 0.2,
@@ -60,8 +60,11 @@ const styles = StyleSheet.create({
     },
     searchBar:{
         flex:8,
-        paddingHorizontal:20,
-
+        paddingTop:3,
+        paddingBottom:15,
+        alignItems: "center",
+        alignContent: "center",
+        textAlign: "center",
     },
     itemContainer: {
         flex:1,

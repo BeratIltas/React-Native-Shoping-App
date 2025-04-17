@@ -21,4 +21,7 @@ export const images = {
   paymentMethods: require('../assets/Account/PaymentMethods.png'),
   rightArrow: require('../assets/Account/RightArrow.png'),
   userProfile: require('../assets/Account/UserProfile.png'),
+  loginProfile: require('../assets/Account/LoginProfile.png'),
+  minus: require('../assets/Cart/Minus.png'),
+  plus: require('../assets/Cart/Plus.png'),
 };

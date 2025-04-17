@@ -20,7 +20,6 @@ const RecentSearches = ({ recentSearches, clearSearches, removeSearchItem, setQu
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={[typography.Header4, styles.headerText]}>Recent Searches</Text>
         <TouchableOpacity onPress={clearSearches}>
@@ -28,7 +27,6 @@ const RecentSearches = ({ recentSearches, clearSearches, removeSearchItem, setQu
         </TouchableOpacity>
       </View>
 
-      {/* List of recent searches */}
       <FlatList
         data={recentSearches}
         keyExtractor={(item, index) => index.toString()}
@@ -58,7 +56,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   clearAllText: {
-    color: '#3B82F6', // Bright accent for "Clear all"
+    color: Colors.orange,
     fontSize: 14,
   },
   list: {

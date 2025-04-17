@@ -1,29 +1,33 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import typography from '../../assets/typography';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useAuth } from './AuthContext'; 
 import Colors from '../../assets/colors';
-import { Assets } from '@react-navigation/elements';
-import { assets } from '../../../react-native.config';
+import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
 
-type ProfileProps = {
-  user: {
-    username: string;
-    email: string;
-  };
-  onLogout: () => void;
-};
+const ProfileScreen: React.FC = () => {
+  const { user, logout } = useAuth();
 
-const ProfileScreen: React.FC<ProfileProps> = ({ user, onLogout }) => {
+  const handleLogout = async () => {
+    try {
+      await logout();
+      console.log('User has logged out successfully');
+    } catch (error: any) {
+      console.error('Logout Error:', error.message || 'Logout failed');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={[typography.Header2, styles.title]}>My Profile</Text>
 
-      <TouchableOpacity style={styles.uppContainer} >
-        <Image source={images.userProfile} style={{}} />
-        <View style={styles.uppContainerText} >
-          <Text style={[typography.Body3Medium, {fontSize: 20, fontWeight: 'bold',}]}>{user.username}</Text>
-          <Text style={[typography.Body3Medium, ]}>{user.email}</Text>
+      <TouchableOpacity style={styles.uppContainer}>
+        <Image source={images.userProfile} style={styles.profileIcon} />
+        <View style={styles.uppContainerText}>
+          <Text style={[typography.Body3Medium, styles.username]}>
+            {user?.displayName || 'Guest User'}
+          </Text>
+          <Text style={[typography.Body3Medium, styles.email]}>{user?.email || 'Email not available'}</Text>
         </View>
       </TouchableOpacity>
 
@@ -67,10 +71,9 @@ const ProfileScreen: React.FC<ProfileProps> = ({ user, onLogout }) => {
         </TouchableOpacity>
 
         <View style={styles.line} />
-
-
       </View>
-      <TouchableOpacity onPress={onLogout} style={styles.logOut}>
+
+      <TouchableOpacity onPress={handleLogout} style={styles.logOut}>
         <Text style={styles.logOutText}>Logout</Text>
       </TouchableOpacity>
     </View>
@@ -81,16 +84,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  downContainer: {
-    flex: 3,
+  title: {
+    paddingLeft: 40,
+    paddingTop: 50,
+    textShadowColor: Colors.darkGray,
+    textShadowRadius: 1,
   },
   uppContainer: {
     flex: 1,
     flexDirection: 'row',
     height: '20%',
     alignItems: 'center',
-    alignContent:'center',
-    alignSelf:'center',
+    alignSelf: 'center',
+  },
+  profileIcon: {
+    resizeMode: 'contain',
+    height: 80,
+    width: 80,
+  },
+  uppContainerText: {
+    paddingLeft: 30,
+  },
+  username: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  email: {},
+  downContainer: {
+    flex: 3,
   },
   optionContainers: {
     marginHorizontal: 20,
@@ -104,15 +125,6 @@ const styles = StyleSheet.create({
   },
   optionContainerLeft: {
     flexDirection: 'row',
-  },
-  uppContainerText:{
-    paddingLeft:30,
-  },
-  title: {
-    paddingLeft: 40,
-    paddingTop: 50,
-    textShadowColor: Colors.darkGray,
-    textShadowRadius: 1,
   },
   subTitle: {
     paddingLeft: 30,
@@ -135,7 +147,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     textShadowColor: Colors.whiteGray,
     textShadowRadius: 1,
-  }
+  },
 });
 
 export default ProfileScreen;

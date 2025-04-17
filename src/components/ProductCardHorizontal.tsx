@@ -25,36 +25,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 
   const handleAddToCart = () => {
     if (addToCardRef.current) {
-      addToCardRef.current.play(0, 75); // Plays the animation from frame 0 to 75
+      addToCardRef.current.play(0, 75);
     }
   };
 
   return (
     <View style={styles.productViewContainer}>
-      <View style={styles.heartViewContainer}>
-        <TouchableOpacity
-          style={styles.heart}
-          onPress={() => {
-            onHeartPress(String(item._id));
-            if (lottieRef.current) {
-              isLiked ? lottieRef.current.play(0, 1) : lottieRef.current.play();
-            }
-          }}
-        >
-          <LottieView
-            ref={lottieRef}
-            source={require('../assets/Animations/Heart.json')}
-            autoPlay={false}
-            loop={false}
-            style={styles.heart}
-            speed={5}
-
-          />
-        </TouchableOpacity>
-      </View>
-
-
-
       <TouchableOpacity
         style={styles.productView}
         onPress={() =>
@@ -93,15 +69,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 
 const styles = StyleSheet.create({
   productViewContainer: {
-    height: height * 0.3,
-    width: width * 0.43,//46 tam
+    height: height * 0.2,
     flex: 1,
-    backgroundColor: Colors.whiteGray
-  },
-  heartViewContainer:{
-    backgroundColor:'red',
-    borderRadius:50
-
+    backgroundColor: Colors.whiteGray,    
   },
   productView: {
     flex: 1,
@@ -112,14 +82,15 @@ const styles = StyleSheet.create({
     borderColor: Colors.black,
     backgroundColor: Colors.white,
     overflow: 'hidden',
+    flexDirection:"row"
+
   },
   img: {
     backgroundColor: Colors.white,
-    flex: 5,
+    flex: 1,
     resizeMode: 'contain',
-    width: '100%',
-    height: '70%',
   },
+
   productDetail: {
     flexDirection: 'row',
     flex: 1,

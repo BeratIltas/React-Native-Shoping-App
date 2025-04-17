@@ -1,37 +1,39 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import LoginOptions from '../components/Account/LoginOptions';
+import { View, StyleSheet } from 'react-native';
 import ProfileScreen from '../components/Account/ProfileScreen';
-
-type User = {
-  username: string;
-  email: string;
-  password: string;
-};
+import { useAuth } from '../components/Account/AuthContext';
+import LoginScreen from '../components/Account/LoginScreen';
+import SignupScreen from '../components/Account/SignupScreen';
 
 const Account: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  const handleLogin = (userData: User) => {
-    setIsLoggedIn(true);
-    setUser(userData);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-  };
+  const { user } = useAuth();
+  const [showLogin, setShowLogin] = useState<boolean>(true);
 
   return (
-    <View style={{ flex: 1 }}>
-      {isLoggedIn && user ? (
-        <ProfileScreen user={user} onLogout={handleLogout} />
+    <View style={styles.container}>
+      {user ? (
+        <ProfileScreen />
       ) : (
-        <LoginOptions onLogin={handleLogin} />
+        <View style={styles.container}>
+        {showLogin ? (
+          <LoginScreen
+            onSignupNavigate={() => setShowLogin(false)}
+          />
+        ) : (
+          <SignupScreen
+            onLoginNavigate={() => setShowLogin(true)}
+          />
+        )}
+      </View>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default Account;

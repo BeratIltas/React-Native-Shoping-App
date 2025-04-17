@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import CommonHeader from '../components/CommonHeader';
+import CommonHeader from '../navigation/Header/CommonHeader';
 import { ProductProps } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
 import AdviceProduct from '../components/AdviceProduct';
+import Share from 'react-native-share'; // Share kütüphanesini ekliyoruz.
+import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,6 +18,7 @@ const ProductDetails = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [productsArray, setProductsArray] = useState([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
+  const addToCardRef = useRef<LottieView | null>(null); // Ref for "AddToCard" animation
 
   const getData = async () => {
     try {
@@ -51,9 +55,29 @@ const ProductDetails = ({ route }: any) => {
     }));
   };
 
+  const handleShare = async () => {
+    if (!productData) return;
+
+    try {
+      const shareOptions = {
+        title: 'Product Details',
+        message: `Check out this product: ${productData.title} for $${productData.price}`,
+        url: productData.image,
+      };
+      await Share.open(shareOptions);
+    } catch (error) {
+      // console.error('Error during sharing:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <CommonHeader page="MainApp" title={productData?.title || "Details"} icon={images.shareIcon} />
+      <CommonHeader
+        page="MainApp"
+        title={productData?.title || "Details"}
+        icon={images.shareIcon}
+        onPress={handleShare}
+      />
 
       {isLoading ? (
         <Loader />
@@ -81,8 +105,15 @@ const ProductDetails = ({ route }: any) => {
             />
           </ScrollView>
 
-          <View style={styles.lottieContainer}>
+          <View style={styles.addToCartContainer}>
             <TouchableOpacity style={styles.addToCartButton}>
+              <LottieView
+                ref={addToCardRef}
+                source={require("../assets/Animations/AddToCard.json")}
+                loop={false}
+                autoPlay={false}
+                style={styles.cardIcon}
+              />
               <Text style={styles.buttonText}>ADD TO CART</Text>
             </TouchableOpacity>
           </View>
@@ -139,26 +170,39 @@ const styles = StyleSheet.create({
     color: Colors.mediumGray,
     lineHeight: 24,
   },
-  lottieContainer: {
-    paddingTop: 20,
-    paddingHorizontal: 16,
-    paddingBottom: 40,
-    backgroundColor: Colors.white,
+  addToCartContainer: {
+    position: 'absolute',
+    bottom: '8%',
+    left: '5%',
+    right: '5%',
+    backgroundColor: 'transparent',
   },
   addToCartButton: {
+    flexDirection: 'row',
     width: '100%',
     height: 48,
     borderRadius: 25,
     backgroundColor: Colors.orange,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   buttonText: {
     fontFamily: 'Metropolis',
     fontSize: 14,
     fontWeight: '500',
     color: '#FFF',
+    paddingLeft: 10,
   },
+  cardIcon: {
+    height: 30,
+    width: 30,
+  }
 });
+
 
 export default ProductDetails;

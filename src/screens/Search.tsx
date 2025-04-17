@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, FlatList, StyleSheet, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  View, FlatList, StyleSheet, Dimensions, TouchableOpacity, Image
+} from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../assets/colors';
-import Header from '../components/Header';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/Search/SearchBar';
 import RecentSearches from '../components/Search/RecentSearches';
-import typography from '../assets/typography';
+import { images } from '../assets/assets';
+import { RootStackParamList } from '../navigation/AppNavigation';
 
 const { height } = Dimensions.get('window');
 
+
 const SearchScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [query, setQuery] = useState('');
   const [productsArray, setProductsArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,8 +63,8 @@ const SearchScreen = () => {
 
   const filteredProducts = query
     ? productsArray.filter((product: any) =>
-      product?.title?.toLowerCase().includes(query.toLowerCase())
-    )
+        product?.title?.toLowerCase().includes(query.toLowerCase())
+      )
     : [];
 
   const handleHeartPress = (productId: string) => {
@@ -81,9 +84,13 @@ const SearchScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
-      <SearchBar query={query} setQuery={setQuery} saveRecentSearch={saveRecentSearch} />
-      
+      <View style={styles.searchContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('MainApp')}>
+          <Image source={images.leftArrow} style={styles.image} />
+        </TouchableOpacity>
+        <SearchBar query={query} setQuery={setQuery} saveRecentSearch={saveRecentSearch} />
+      </View>
+
       {query === '' ? (
         <RecentSearches
           recentSearches={recentSearches}
@@ -108,8 +115,20 @@ const SearchScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 60,
     flex: 1,
     backgroundColor: Colors.white,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,    
+  },
+  image: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+
   },
   listContainer: {
     paddingBottom: 100,

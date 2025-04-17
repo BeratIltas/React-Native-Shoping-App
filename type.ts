@@ -9,9 +9,22 @@ export type RootStackParamList = {
     Contact: undefined;
     Checkout: undefined;
     Onboarding: undefined;
+    Search: undefined;
+    Header: undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
+export type User = {
+    username?: string;
+    email: string;
+  };
+export  type ProfileProps = {
+    user: {
+      username?: string;
+      email: string;
+    };
+    onLogout: () => void;
+  };  
 export interface ProductProps {
     brand: string;
     category: string;

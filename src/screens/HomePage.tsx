@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, FlatList, Dimensions, StyleSheet, Image } from 'react-native';
-import Header from '../components/Header';
+import Header from '../navigation/Header/Header';
 import Carousel from 'react-native-reanimated-carousel';
 import { images } from '../assets/assets';
 import Colors from '../assets/colors';

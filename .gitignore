@@ -72,3 +72,12 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/build/
+
+google-services.json
+GoogleService-Info.plist

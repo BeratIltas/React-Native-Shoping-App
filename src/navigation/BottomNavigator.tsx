@@ -1,8 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomePage from '../screens/HomePage';
-import Search from '../screens/Search';
 import Saved from '../screens/Saved';
 import Account from '../screens/Account';
+import Cart from '../screens/Cart';
 import React from 'react';
 import Colors from '../assets/colors';
 import { images } from '../assets/assets';
@@ -16,6 +16,13 @@ export default function BottomNavigator() {
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarActiveTintColor: Colors.black,
+                tabBarStyle: {
+                    backgroundColor: Colors.white,
+                    elevation: 0,
+                    borderTopWidth: 0,
+                },
+                tabBarHideOnKeyboard: true,
+                animationEnabled: false,
             })}
         >
             <Tab.Screen name="Home" component={HomePage} options={{
@@ -24,9 +31,9 @@ export default function BottomNavigator() {
                         style={{ width: 24, height: 24, tintColor: focused ? '#000' : '#888' }} />
                 )
             }} />
-            <Tab.Screen name="Search" component={Search} options={{
+            <Tab.Screen name="Cart" component={Cart} options={{
                 tabBarIcon: ({ focused, color }) => (
-                    <Image source={images.searchIcon} resizeMode="contain"
+                    <Image source={images.cartIcon} resizeMode="contain"
                         style={{ width: 24, height: 24, tintColor: focused ? '#000' : '#888' }} />
                 )
             }} />

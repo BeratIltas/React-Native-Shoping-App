@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import ProductCard from './ProductCard';
 import typography from '../assets/typography';
@@ -8,6 +8,14 @@ const AdviceProduct = ({ products, onHeartPress, likedProducts }: {
   onHeartPress: (productId: string) => void,
   likedProducts: { [key: string]: boolean },
 }) => {
+  const shuffleArray = (array: Array<any>) => {
+    return array
+      .map(item => ({ item, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ item }) => item);
+  };
+  const shuffledProducts = useMemo(() => shuffleArray(products), [products]);
+
   const renderAdviceItem = ({ item }: { item: any }) => (
     <View style={styles.itemContainer}>
       <ProductCard
@@ -22,10 +30,10 @@ const AdviceProduct = ({ products, onHeartPress, likedProducts }: {
     <View style={styles.container}>
     <Text style={[typography.Header4, styles.categoryHeader]}>Advice Product</Text>
       <FlatList
-        data={products}
+        data={shuffledProducts}
         renderItem={renderAdviceItem}
         keyExtractor={(item) => String(item._id)}
-        horizontal // Enables horizontal scrolling
+        horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
       />

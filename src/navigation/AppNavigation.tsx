@@ -5,13 +5,14 @@ import Onboarding from "../screens/Onboarding";
 import ProductDetails from "../screens/ProductDetails";
 import BottomTabNavigator from "./BottomNavigator";
 import ProductsPage from "../screens/ProductsPage";
-
+import Search from "../screens/Search";
 export type RootStackParamList = {
   Intro: undefined;
   Onboarding: undefined;
   MainApp: undefined;
   ProductDetails: { productId: string };
   ProductsPage: {category:string};
+  Search: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +23,7 @@ const AppNavigator = () => {
       {/* <Stack.Screen name="Intro" component={Intro} />
       <Stack.Screen name="Onboarding" component={Onboarding} /> */}
       <Stack.Screen name="MainApp" component={BottomTabNavigator} />
+      <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="ProductsPage" component={ProductsPage} />   
       <Stack.Screen name="ProductDetails" component={ProductDetails} />   
     </Stack.Navigator>

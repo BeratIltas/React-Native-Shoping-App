@@ -1,33 +1,39 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Dimensions, Image } from 'react-native';
+import { useAuth } from './AuthContext'; // Context API'den kullanıcı durumu erişimi
 import Colors from '../../assets/colors';
-import LottieView from 'lottie-react-native';
 import typography from '../../assets/typography';
+import { images } from '../../assets/assets';
 
 const { width } = Dimensions.get('window');
 
 type SignupScreenProps = {
-  onSignup: (userData: { username: string; email: string; password: string }) => void;
   onLoginNavigate: () => void;
 };
 
-const SignupScreen: React.FC<SignupScreenProps> = ({ onSignup, onLoginNavigate }) => {
+const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signup } = useAuth(); // Context API'den signup fonksiyonunu alıyoruz
 
-  const handleSignup = () => {
-    onSignup({ username, email, password });
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  const handleSignup = async () => {
+    try {
+      await signup(email, password); // Kayıt işlemini başlat
+      Alert.alert('Başarılı!', 'Kayıt işlemi tamamlandı!');
+    } catch (error: any) {
+      Alert.alert('Hata!', error.message || 'Kayıt işlemi yapılamadı.');
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.upContainerBg}>
         <View style={styles.upContainer}>
-          <LottieView
-            source={require('../../assets/Animations/AddToCard.json')}
-            style={styles.lottie}
-          />
+          <Image source={images.loginProfile} style={styles.profileIcon} />
         </View>
       </View>
       <View style={styles.downContainer}>
@@ -36,29 +42,40 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignup, onLoginNavigate }
           <TextInput
             style={styles.input}
             placeholder="Username"
+            value={username}
             onChangeText={(text) => setUsername(text)}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current?.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
+            ref={emailRef}
             style={styles.input}
             placeholder="Email"
+            value={email}
             onChangeText={(text) => setEmail(text)}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            blurOnSubmit={false}
           />
           <TextInput
+            ref={passwordRef}
             style={styles.input}
             placeholder="Password"
             secureTextEntry
+            value={password}
             onChangeText={(text) => setPassword(text)}
+            returnKeyType="done"
+            onSubmitEditing={handleSignup}
           />
           <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
-            <Text style={[typography.Body1, styles.loginText]}>Login</Text>
+            <Text style={[typography.Body1, styles.loginText]}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-
         <TouchableOpacity onPress={onLoginNavigate}>
           <Text style={styles.linkText}>Already have an account? Log In</Text>
         </TouchableOpacity>
       </View>
-
     </View>
   );
 };
@@ -74,15 +91,19 @@ const styles = StyleSheet.create({
   },
   upContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.darkGray,
     borderBottomLeftRadius: 60,
   },
-  lottie: {
-    marginTop: 20,
+  profileIcon: {
+    marginTop: '15%',
+    marginBottom: '10%',
+    resizeMode: 'contain',
     flex: 1,
   },
   downContainer: {
-    flex: 1.5,
+    flex: 1.8,
     backgroundColor: Colors.whiteGray,
     borderTopRightRadius: 60,
   },

@@ -3,7 +3,7 @@ import { View, TextInput, FlatList, StyleSheet, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../assets/colors';
-import Header from '../Header';
+import Header from '../../navigation/Header/Header';
 import Loader from '../Loader';
 import ProductCard from '../ProductCard';
 import SearchBar from '../Search/SearchBar';
@@ -83,7 +83,7 @@ const SearchScreen = () => {
     <View style={styles.container}>
       <Header />
       <SearchBar query={query} setQuery={setQuery} saveRecentSearch={saveRecentSearch} />
-      
+
       {query === '' ? (
         <RecentSearches
           recentSearches={recentSearches}

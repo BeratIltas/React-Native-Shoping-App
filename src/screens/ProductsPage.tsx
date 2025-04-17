@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import CommonHeader from "../components/CommonHeader";
+import CommonHeader from "../navigation/Header/CommonHeader";
 import FilterOptions from "../components/Filters/FilterOptions";
 import ProductCard from "../components/ProductCard";
 import Loader from "../components/Loader";
