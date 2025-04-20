@@ -4,6 +4,7 @@ import LottieView from 'lottie-react-native';
 import typography from '../assets/typography';
 import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
+import { useCart } from './Cart/CartContext';
 
 const { height, width } = Dimensions.get('window');
 
@@ -22,10 +23,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
   const navigation: any = useNavigation();
   const lottieRef = useRef<LottieView | null>(null); // Ref for "Heart" animation
   const addToCardRef = useRef<LottieView | null>(null); // Ref for "AddToCard" animation
-
+  const { addToCart } = useCart();
   const handleAddToCart = () => {
     if (addToCardRef.current) {
-      addToCardRef.current.play(0, 75); // Plays the animation from frame 0 to 75
+      addToCardRef.current.play(0, 75);
+      addToCart({ ...item, quantity: 1 }) 
     }
   };
 

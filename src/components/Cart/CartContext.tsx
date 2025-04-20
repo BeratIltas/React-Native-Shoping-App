@@ -1,88 +1,72 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Ürün tipi
-interface Product {
-  id: string;
-  name: string;
+export interface ProductProps {
+  _id: string;
+  image: string;
+  title: string;
   price: number;
   quantity: number;
 }
 
-// Sepet durum tipi
-interface CartState {
-  cart: Product[];
-}
-
-// Aksiyon tipi
-type CartAction =
-  | { type: 'ADD_TO_CART'; payload: Product }
-  | { type: 'REMOVE_FROM_CART'; payload: string }
-  | { type: 'INCREASE_QUANTITY'; payload: string }
-  | { type: 'DECREASE_QUANTITY'; payload: string };
-
-// Sepet durumu için başlangıç durumu
-const initialState: CartState = {
-  cart: [],
+type CartContextType = {
+  cartItems: ProductProps[];
+  addToCart: (product: ProductProps) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  totalPrice: number;
 };
 
-// Reducer fonksiyonu
-const cartReducer = (state: CartState, action: CartAction): CartState => {
-  switch (action.type) {
-    case 'ADD_TO_CART':
-      const existingProduct = state.cart.find((item) => item.id === action.payload.id);
-      if (existingProduct) {
-        return {
-          ...state,
-          cart: state.cart.map((item) =>
-            item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + action.payload.quantity }
-              : item
-          ),
-        };
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cartItems, setCartItems] = useState<ProductProps[]>([]);
+
+  useEffect(() => {
+    const loadCart = async () => {
+      const jsonValue = await AsyncStorage.getItem('cart');
+      if (jsonValue) setCartItems(JSON.parse(jsonValue));
+    };
+    loadCart();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product: ProductProps) => {
+    setCartItems(prev => {
+      const existing = prev.find(p => p._id === product._id);
+      if (existing) {
+        return prev.map(p => p._id === product._id ? { ...p, quantity: p.quantity + 1 } : p);
+      } else {
+        return [...prev, { ...product, quantity: 1 }];
       }
-      return { ...state, cart: [...state.cart, action.payload] };
+    });
+  };
 
-    case 'REMOVE_FROM_CART':
-      return { ...state, cart: state.cart.filter((item) => item.id !== action.payload) };
+  const removeFromCart = (id: string) => {
+    setCartItems(prev => prev.filter(item => item._id !== id));
+  };
 
-    case 'INCREASE_QUANTITY':
-      return {
-        ...state,
-        cart: state.cart.map((item) =>
-          item.id === action.payload ? { ...item, quantity: item.quantity + 1 } : item
-        ),
-      };
+  const updateQuantity = (id: string, quantity: number) => {
+    setCartItems(prev => prev.map(item => item._id === id ? { ...item, quantity } : item));
+  };
 
-    case 'DECREASE_QUANTITY':
-      return {
-        ...state,
-        cart: state.cart.map((item) =>
-          item.id === action.payload && item.quantity > 1
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        ),
-      };
+  const clearCart = () => setCartItems([]);
 
-    default:
-      return state;
-  }
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
+  return (
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice }}>
+      {children}
+    </CartContext.Provider>
+  );
 };
 
-// Context oluşturma
-const CartContext = createContext<{
-  state: CartState;
-  dispatch: React.Dispatch<CartAction>;
-}>({
-  state: initialState,
-  dispatch: () => null,
-});
-
-// Context Provider
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
-
-  return <CartContext.Provider value={{ state, dispatch }}>{children}</CartContext.Provider>;
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) throw new Error('useCart must be used within a CartProvider');
+  return context;
 };
-
-// Context kullanımı için hook
-export const useCart = () => useContext(CartContext);

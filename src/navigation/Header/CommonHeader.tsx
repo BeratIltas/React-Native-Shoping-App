@@ -4,7 +4,7 @@ import Colors from '../../assets/colors';
 import { images } from '../../assets/assets';
 import { useNavigation } from '@react-navigation/native';
 
-type PageNames = "MainApp" | "Intro" | "Cart" | "ProductDetails" | "Addresses" | "Contact" | "Checkout" | "Onboarding"| "Saved";
+type PageNames = "goBack"|"MainApp" | "Intro" | "Cart" | "ProductDetails" | "Addresses" | "Contact" | "Checkout" | "Onboarding" | "Saved" | "Payment";
 
 const CommonHeader = ({ 
     title, 
@@ -25,14 +25,19 @@ const CommonHeader = ({
 
     const handleNavigation = () => {
         if (page) {
-            navigation.navigate({
-                name: page,
-                params: params || {},
-            } as never);
+            if (page === 'goBack') {
+                navigation.goBack();  // Eğer page 'goBack' ise geri git
+            } else {
+                navigation.navigate({
+                    name: page,
+                    params: params || {},
+                } as never);
+            }
         } else {
             console.log("No page specified for navigation.");
         }
     };
+    
 
     return (
         <SafeAreaView style={styles.container}>

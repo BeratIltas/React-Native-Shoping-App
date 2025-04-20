@@ -20,11 +20,11 @@ const RootContent = () => {
   return (
     <AuthProvider>
       <CartProvider>
-        <GestureHandlerRootView>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-        </GestureHandlerRootView>
+          <GestureHandlerRootView>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </GestureHandlerRootView>
       </CartProvider>
     </AuthProvider>
 

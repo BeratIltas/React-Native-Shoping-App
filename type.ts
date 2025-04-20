@@ -35,7 +35,8 @@ export interface ProductProps {
     price: number;
     quentity: number;
     title: string;
-    _id: number;
+    _id: string;
+    quantity: number;
 }
 
 export interface Item {

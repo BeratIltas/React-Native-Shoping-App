@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     },
     loading:{
         alignItems:'center',
-        marginBottom:'35%',
+        paddingBottom:'35%',
         height:height,
         width:width,
 

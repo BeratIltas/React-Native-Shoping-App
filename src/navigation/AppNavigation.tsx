@@ -6,6 +6,8 @@ import ProductDetails from "../screens/ProductDetails";
 import BottomTabNavigator from "./BottomNavigator";
 import ProductsPage from "../screens/ProductsPage";
 import Search from "../screens/Search";
+import Cart from "../screens/Cart";
+import Checkout from "../screens/Checkout";
 export type RootStackParamList = {
   Intro: undefined;
   Onboarding: undefined;
@@ -13,6 +15,8 @@ export type RootStackParamList = {
   ProductDetails: { productId: string };
   ProductsPage: {category:string};
   Search: undefined;
+  Checkout:undefined;
+  Cart:undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,7 +29,9 @@ const AppNavigator = () => {
       <Stack.Screen name="MainApp" component={BottomTabNavigator} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="ProductsPage" component={ProductsPage} />   
-      <Stack.Screen name="ProductDetails" component={ProductDetails} />   
+      <Stack.Screen name="ProductDetails" component={ProductDetails} /> 
+      <Stack.Screen name="Cart" component={Cart}/>  
+      <Stack.Screen name="Checkout" component={Checkout}/>  
     </Stack.Navigator>
   );
 };

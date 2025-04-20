@@ -24,4 +24,6 @@ export const images = {
   loginProfile: require('../assets/Account/LoginProfile.png'),
   minus: require('../assets/Cart/Minus.png'),
   plus: require('../assets/Cart/Plus.png'),
+  cartEmpty:require('../assets/Cart/CartEmpty.png'),
+  location: require('../assets/Checkout/Location.png'),
 };

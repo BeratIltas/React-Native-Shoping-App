@@ -9,6 +9,7 @@ import AdviceProduct from '../components/AdviceProduct';
 import Share from 'react-native-share'; // Share kütüphanesini ekliyoruz.
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import LottieView from 'lottie-react-native';
+import { useCart } from '../components/Cart/CartContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,7 +19,8 @@ const ProductDetails = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [productsArray, setProductsArray] = useState([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
-  const addToCardRef = useRef<LottieView | null>(null); // Ref for "AddToCard" animation
+  const addToCardRef = useRef<LottieView | null>(null);
+  const { addToCart } = useCart();
 
   const getData = async () => {
     try {
@@ -66,7 +68,7 @@ const ProductDetails = ({ route }: any) => {
       };
       await Share.open(shareOptions);
     } catch (error) {
-      // console.error('Error during sharing:', error);
+      console.error('Error during sharing:', error);
     }
   };
 
@@ -106,7 +108,14 @@ const ProductDetails = ({ route }: any) => {
           </ScrollView>
 
           <View style={styles.addToCartContainer}>
-            <TouchableOpacity style={styles.addToCartButton}>
+            <TouchableOpacity style={styles.addToCartButton} 
+              onPress={() => {
+                if (productData?._id) {
+                  addToCart({ ...productData, quantity: 1 });
+                } else {
+                  console.error("Product ID is missing");
+                }
+              }}>
               <LottieView
                 ref={addToCardRef}
                 source={require("../assets/Animations/AddToCard.json")}
