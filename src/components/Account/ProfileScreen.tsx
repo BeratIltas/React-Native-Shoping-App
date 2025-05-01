@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useAuth } from './AuthContext'; 
+import { useAuth } from './AuthContext';
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../../type';
 
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,6 +18,7 @@ const ProfileScreen: React.FC = () => {
       console.error('Logout Error:', error.message || 'Logout failed');
     }
   };
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.container}>
@@ -52,7 +55,7 @@ const ProfileScreen: React.FC = () => {
 
         <View style={styles.line} />
 
-        <TouchableOpacity style={styles.optionContainers}>
+        <TouchableOpacity style={styles.optionContainers}  onPress={() => navigation.navigate('PaymentMethods')}>
           <View style={styles.optionContainerLeft}>
             <Image source={images.paymentMethods} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Payment Methods</Text>
@@ -71,6 +74,18 @@ const ProfileScreen: React.FC = () => {
         </TouchableOpacity>
 
         <View style={styles.line} />
+
+        <TouchableOpacity style={styles.optionContainers}
+          onPress={() => navigation.navigate("HelpScreen")}>
+          <View style={styles.optionContainerLeft}>
+            <Image source={images.headPhones} />
+            <Text style={[typography.Body1Regular, styles.subTitle]}>Help</Text>
+          </View>
+          <Image source={images.rightArrow} />
+        </TouchableOpacity>
+
+        <View style={styles.line} />
+
       </View>
 
       <TouchableOpacity onPress={handleLogout} style={styles.logOut}>
@@ -125,6 +140,8 @@ const styles = StyleSheet.create({
   },
   optionContainerLeft: {
     flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center"
   },
   subTitle: {
     paddingLeft: 30,

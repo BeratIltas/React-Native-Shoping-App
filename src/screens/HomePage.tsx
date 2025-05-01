@@ -9,6 +9,7 @@ import Loader from '../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CategoryRow from '../components/CategoryRow';
 import AdviceProduct from '../components/AdviceProduct';
+import PromotionCard from '../components/PromotionCard';
 
 const { width } = Dimensions.get('window');
 
@@ -95,6 +96,20 @@ const HomePage = () => {
                   products={productsArray}
                   onHeartPress={handleHeartPress}
                   likedProducts={likedProducts} />
+                {productsArray
+                  .sort(() => Math.random() - 0.5)
+                  .slice(0, 50)
+                  .map((item: any) => (
+                    <PromotionCard
+                      key={item._id}
+                      item={{
+                        _id: item._id,
+                        image: item.image,
+                        brand: item.brand,
+                        category:item.category,
+                      }}
+                    />
+                  ))}
               </View>
 
             }

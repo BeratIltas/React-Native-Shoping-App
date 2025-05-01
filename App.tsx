@@ -14,17 +14,20 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { AuthProvider } from './src/components/Account/AuthContext';
 import { CartProvider } from './src/components/Cart/CartContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PaymentCardProvider } from './src/components/Account/Payment/PaymentCardContext';
 const Tab = createBottomTabNavigator();
 
 const RootContent = () => {
   return (
     <AuthProvider>
       <CartProvider>
+        <PaymentCardProvider>
           <GestureHandlerRootView>
             <NavigationContainer>
               <AppNavigator />
             </NavigationContainer>
           </GestureHandlerRootView>
+        </PaymentCardProvider>
       </CartProvider>
     </AuthProvider>
 

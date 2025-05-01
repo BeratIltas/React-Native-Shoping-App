@@ -8,16 +8,12 @@ import ProductsPage from "../screens/ProductsPage";
 import Search from "../screens/Search";
 import Cart from "../screens/Cart";
 import Checkout from "../screens/Checkout";
-export type RootStackParamList = {
-  Intro: undefined;
-  Onboarding: undefined;
-  MainApp: undefined;
-  ProductDetails: { productId: string };
-  ProductsPage: {category:string};
-  Search: undefined;
-  Checkout:undefined;
-  Cart:undefined;
-};
+import { RootStackParamList } from "../../type";
+import HelpScreen from "../components/Account/Help/HelpScreen";
+import ProfileScreen from "../components/Account/ProfileScreen";
+import Account from "../screens/Account";
+import PaymentMethods from "../components/Account/Payment/PaymentMethods";
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,7 +27,12 @@ const AppNavigator = () => {
       <Stack.Screen name="ProductsPage" component={ProductsPage} />   
       <Stack.Screen name="ProductDetails" component={ProductDetails} /> 
       <Stack.Screen name="Cart" component={Cart}/>  
-      <Stack.Screen name="Checkout" component={Checkout}/>  
+      <Stack.Screen name="Checkout" component={Checkout}/>
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods}/>
+      <Stack.Screen name="Account" component={Account}/> 
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen}/> 
+      <Stack.Screen name="HelpScreen" component={HelpScreen}/>
+
     </Stack.Navigator>
   );
 };

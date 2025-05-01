@@ -1,16 +1,22 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
+    MainApp:undefined;
     HomePage: undefined;
     Intro: undefined;
     Cart: undefined;
-    ProductDetails: undefined;
+    ProductDetails: { productId: string };
+    ProductsPage: {category:string};
     Addresses: undefined;
     Contact: undefined;
     Checkout: undefined;
     Onboarding: undefined;
     Search: undefined;
     Header: undefined;
+    HelpScreen:undefined;
+    ProfileScreen:undefined;
+    Account:undefined;
+    PaymentMethods:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 

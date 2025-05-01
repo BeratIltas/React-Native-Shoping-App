@@ -4,7 +4,9 @@ import Colors from '../../assets/colors';
 import { images } from '../../assets/assets';
 import { useNavigation } from '@react-navigation/native';
 
-type PageNames = "goBack"|"MainApp" | "Intro" | "Cart" | "ProductDetails" | "Addresses" | "Contact" | "Checkout" | "Onboarding" | "Saved" | "Payment";
+type PageNames = "goBack"|"MainApp" | "Intro" | "Cart" | 
+"ProductDetails" | "Addresses" | "Contact" | "Checkout" |
+ "Onboarding" | "Saved" | "Payment"| "ProfileScreen"|"Account"|"PaymentMethods";
 
 const CommonHeader = ({ 
     title, 

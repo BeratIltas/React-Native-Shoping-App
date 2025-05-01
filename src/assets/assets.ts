@@ -15,6 +15,7 @@ export const images = {
   electronicIcon: require('../assets/HomePage/Electronic.png'),
   furnitureIcon: require('../assets/HomePage/Furniture.png'),
   allIcon: require('../assets/HomePage/All.png'),
+  badge: require('../assets/HomePage/badge.png'),
   filters: require('../assets/Search/Filters.png'),
   addressBook: require('../assets/Account/AddressBook.png'),
   myOrders: require('../assets/Account/MyOrders.png'),
@@ -22,8 +23,13 @@ export const images = {
   rightArrow: require('../assets/Account/RightArrow.png'),
   userProfile: require('../assets/Account/UserProfile.png'),
   loginProfile: require('../assets/Account/LoginProfile.png'),
+  headPhones: require('../assets/Account/Headphones.png'),
+  phone: require('../assets/Account/Phone.png'),
+  send: require('../assets/Account/Send.png'),
   minus: require('../assets/Cart/Minus.png'),
   plus: require('../assets/Cart/Plus.png'),
   cartEmpty:require('../assets/Cart/CartEmpty.png'),
   location: require('../assets/Checkout/Location.png'),
+  discount: require('../assets/Checkout/Discount.png'),
+
 };
