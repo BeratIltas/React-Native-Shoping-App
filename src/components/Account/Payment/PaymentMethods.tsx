@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput, Image } from 'react-native';
 import CommonHeader from '../../../navigation/Header/CommonHeader';
 import { usePaymentCards } from './PaymentCardContext';
+import { images } from '../../../assets/assets';
+import typography from '../../../assets/typography';
+import Colors from '../../../assets/colors';
+import AddCardModal from './AddPaymentModal';
+import AddPaymentModal from './AddPaymentModal';
+
 
 interface PaymentCard {
   id: string;
@@ -14,6 +20,7 @@ const PaymentMethods = () => {
   const { cards, setDefaultCard, deleteCard, defaultCardId, addCard } = usePaymentCards();
   const [modalVisible, setModalVisible] = useState(false);
   const [newCard, setNewCard] = useState({ cardNumber: '', expiry: '', nameOnCard: '' });
+  const [showDelete, setShowDelete] = useState(false);
 
   const handleAddCard = async () => {
     if (newCard.cardNumber && newCard.expiry && newCard.nameOnCard) {
@@ -25,66 +32,70 @@ const PaymentMethods = () => {
 
   return (
     <View style={styles.container}>
-      <CommonHeader title="Payment Methods" icon={null} page="goBack" />
+      <CommonHeader title="Payment Methods" icon={showDelete ? images.check : null} onPress={() => setShowDelete(false)} page="goBack" />
       <ScrollView contentContainerStyle={styles.list}>
         {cards.map((card) => (
           <View
             key={card.id}
-            style={[styles.cardContainer, card.id === defaultCardId ? styles.defaultCard : null]}
           >
-            <Text style={styles.cardNumber}>**** **** **** {card.cardNumber.slice(-4)}</Text>
-            <Text style={styles.cardName}>{card.nameOnCard}</Text>
-            <Text style={styles.cardExpiry}>Expires {card.expiry}</Text>
-            {card.id === defaultCardId ? (
-              <Text style={styles.defaultText}>Default ✅</Text>
-            ) : (
-              <TouchableOpacity
-                onPress={() => setDefaultCard(card.id)}
-                style={styles.setDefaultButton}
-              >
-                <Text style={styles.setDefaultText}>Set Default</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={() => deleteCard(card.id)} style={styles.deleteButton}>
-              <Text style={styles.deleteText}>Delete</Text>
+            <TouchableOpacity style={styles.creditCard}
+              onLongPress={() => setShowDelete(true)}
+              activeOpacity={1}
+            >
+
+              {showDelete && (
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => deleteCard(card.id)}
+                >
+                  <Image source={images.trash} style={{ tintColor: "white" }} />
+                </TouchableOpacity>
+              )}
+
+              <Image style={styles.chipImage} source={images.chip} />
+              <View>
+                <Text style={styles.cardNumber}>**** **** **** {card.cardNumber.slice(-4)}</Text>
+              </View>
+              <View style={styles.cardBottomContainer}>
+                <View style={styles.cardInfoContainer}>
+                  <Text style={[typography.Body3Regular, { color: "white" }]} >Card Holder Name</Text>
+                  <Text style={[styles.cardName, typography.Body2]}>{card.nameOnCard}</Text>
+                </View>
+                <View style={styles.cardInfoContainer}>
+                  <Text style={[typography.Body3Regular, { color: "white" }]} >Expiry Date</Text>
+                  <Text style={[styles.cardExpiry, typography.Body2]}>{card.expiry}</Text>
+                </View>
+                <View style={styles.cardInfoContainer}>
+                  if{card?.id.startsWith("4") ?
+                    <Image source={images.visa} /> : <Image source={images.mastercard} />
+                  }</View>
+              </View>
             </TouchableOpacity>
+            <View style={styles.defaultContainer} >
+              {card.id === defaultCardId ? (
+                <Image source={images.checkboxOn} />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => setDefaultCard(card.id)}
+                >
+                  <Image source={images.checkboxOff} />
+                </TouchableOpacity>
+              )}
+              <Text style={typography.Body2Medium}>Use as default payment method</Text>
+            </View>
           </View>
         ))}
       </ScrollView>
+
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.addButtonText}>+ Add New Card</Text>
+        <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
 
-      {/* Modal for Adding Card */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Add New Card</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Card Number"
-            value={newCard.cardNumber}
-            onChangeText={(text) => setNewCard({ ...newCard, cardNumber: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Expiry Date (MM/YY)"
-            value={newCard.expiry}
-            onChangeText={(text) => setNewCard({ ...newCard, expiry: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Name on Card"
-            value={newCard.nameOnCard}
-            onChangeText={(text) => setNewCard({ ...newCard, nameOnCard: text })}
-          />
-          <TouchableOpacity style={styles.saveButton} onPress={handleAddCard}>
-            <Text style={styles.saveButtonText}>Save Card</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <AddPaymentModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+
     </View>
   );
 };
@@ -93,99 +104,85 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    paddingHorizontal: 5
   },
   list: {
     padding: 16,
+    paddingBottom: 46
   },
-  cardContainer: {
-    backgroundColor: '#fff',
+
+  creditCard: {
+    backgroundColor: "#222222",
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
+    padding: 20,
     elevation: 1,
+    gap: 24,
   },
-  defaultCard: {
-    borderWidth: 1,
-    borderColor: '#4caf50',
+  deleteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+
+  },
+  chipImage: {
+    resizeMode: "contain",
+    marginTop: 10,
   },
   cardNumber: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 24,
+    color: "#fff",
+    letterSpacing: 2,
+  },
+  cardBottomContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardInfoContainer: {
+    justifyContent: "center",
+    alignItems: "center"
   },
   cardName: {
     fontSize: 16,
-    color: '#333',
+    color: 'white',
     marginVertical: 4,
+    fontWeight: "bold"
   },
   cardExpiry: {
-    fontSize: 14,
-    color: '#999',
+    color: 'white',
   },
-  defaultText: {
-    color: '#4caf50',
-    marginTop: 8,
+  defaultContainer: {
+    flexDirection: "row",
+    gap: 20,
+    paddingVertical: 20,
+    alignItems: "center",
+    alignContent: "center",
+
   },
-  setDefaultButton: {
-    marginTop: 8,
-  },
-  setDefaultText: {
-    color: '#007bff',
-  },
-  deleteButton: {
-    marginTop: 8,
-  },
-  deleteText: {
-    color: '#ff0000',
-  },
+
   addButton: {
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#007bff',
+    backgroundColor: Colors.black,
     borderRadius: 50,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    elevation: 2,
+    height: 44,
+    width: 44,
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "white",
+    shadowColor: 'rgba(255, 255, 255, 0.5)',
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 2
+
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 16,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: '#fff',
-  },
-  input: {
-    width: '80%',
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  saveButton: {
-    backgroundColor: '#4caf50',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  saveButtonText: {
-    color: '#fff',
-  },
-  cancelButton: {
-    backgroundColor: '#ff0000',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  cancelButtonText: {
-    color: '#fff',
+    fontSize: 26,
+    textAlign: "center",
+    textAlignVertical: "center"
+
   },
 });
 

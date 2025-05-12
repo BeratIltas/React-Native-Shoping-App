@@ -7,12 +7,14 @@ interface PaymentCard {
   cardNumber: string;
   expiry: string;
   nameOnCard: string;
+  type?: 'visa' | 'mastercard' | 'default';
 }
 
 interface PaymentCardContextProps {
   cards: PaymentCard[];
   defaultCardId: string | null;
-  addCard: (card: Omit<PaymentCard, 'id'>) => Promise<void>;
+  defaultCard: PaymentCard | null;
+  addCard: (card: Omit<PaymentCard, 'id' | 'type'>) => Promise<void>;
   deleteCard: (cardId: string) => Promise<void>;
   setDefaultCard: (cardId: string) => Promise<void>;
   loading: boolean;
@@ -22,6 +24,12 @@ const PaymentCardContext = createContext<PaymentCardContextProps | undefined>(un
 
 const CARDS_KEY = 'payment_cards';
 const DEFAULT_CARD_KEY = 'default_card_id';
+
+const getCardType = (cardNumber: string): 'visa' | 'mastercard' | 'default' => {
+  if (cardNumber.startsWith('4')) return 'visa';
+  if (cardNumber.startsWith('5')) return 'mastercard';
+  return 'default';
+};
 
 export const PaymentCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cards, setCards] = useState<PaymentCard[]>([]);
@@ -47,10 +55,14 @@ export const PaymentCardProvider: React.FC<{ children: React.ReactNode }> = ({ c
     await AsyncStorage.setItem(CARDS_KEY, JSON.stringify(updatedCards));
   };
 
-  const addCard = async (card: Omit<PaymentCard, 'id'>) => {
-    const newCard: PaymentCard = { id: uuid.v4().toString(), ...card };
-    const updatedCards = [...cards, newCard];
+  const addCard = async (card: Omit<PaymentCard, 'id' | 'type'>) => {
+    const newCard: PaymentCard = {
+      id: uuid.v4().toString(),
+      ...card,
+      type: getCardType(card.cardNumber),
+    };
 
+    const updatedCards = [...cards, newCard];
     await saveCards(updatedCards);
 
     if (updatedCards.length === 1) {
@@ -73,8 +85,20 @@ export const PaymentCardProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setDefaultCardId(cardId);
   };
 
+  const defaultCard = cards.find(card => card.id === defaultCardId) || null;
+
   return (
-    <PaymentCardContext.Provider value={{ cards, defaultCardId, addCard, deleteCard, setDefaultCard, loading }}>
+    <PaymentCardContext.Provider
+      value={{
+        cards,
+        defaultCardId,
+        defaultCard,
+        addCard,
+        deleteCard,
+        setDefaultCard,
+        loading,
+      }}
+    >
       {children}
     </PaymentCardContext.Provider>
   );

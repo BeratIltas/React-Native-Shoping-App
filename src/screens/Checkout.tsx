@@ -5,9 +5,9 @@ import Colors from '../assets/colors'
 import typography from '../assets/typography'
 import { images } from '../assets/assets'
 import { useCart } from '../components/Cart/CartContext'
-import CreditCard from '../components/Account/Payment/CreditCard'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../type'
+import { usePaymentCards } from '../components/Account/Payment/PaymentCardContext'
 
 
 const Checkout = () => {
@@ -17,6 +17,7 @@ const Checkout = () => {
     const shippingFee = 50;
     const total = totalPrice - Number(discount) + shippingFee;
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const { defaultCard } = usePaymentCards();
 
     useEffect(() => {
         const showListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -73,13 +74,18 @@ const Checkout = () => {
                                 <Text style={[typography.Body2Medium, styles.changeText]}>Change</Text>
                             </TouchableOpacity>
                         </View>
-                        <View>
-
-                        </View>
-                        <View>
-
+                        <View style={styles.paymentBody}>
+                            <View>
+                                if{defaultCard?.id.startsWith("4") ?
+                                    <Image source={images.visa} /> : <Image source={images.mastercard} />
+                                }
+                            </View>
+                            <View>
+                                <Text>**** **** **** {defaultCard?.cardNumber.slice(-4)}</Text>
+                            </View>
                         </View>
                     </View>
+                    <View style={styles.divider} />
 
                     <View style={styles.orderSummaryContainer} >
                         <View style={styles.addressheader}>
@@ -187,9 +193,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 5,
         gap: 15,
-        backgroundColor: "red"
     },
-
+    paymentBody: {
+        resizeMode:"center",
+        flexDirection: "row",
+        gap:"20",
+    },
     orderSummaryContainer: {
         paddingHorizontal: 20,
         gap: 10,
