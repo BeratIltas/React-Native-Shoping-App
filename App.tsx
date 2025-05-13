@@ -15,6 +15,7 @@ import { AuthProvider } from './src/components/Account/AuthContext';
 import { CartProvider } from './src/components/Cart/CartContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaymentCardProvider } from './src/components/Account/Payment/PaymentCardContext';
+import { AddressProvider } from './src/components/Account/Address/AddressContext';
 const Tab = createBottomTabNavigator();
 
 const RootContent = () => {
@@ -22,11 +23,13 @@ const RootContent = () => {
     <AuthProvider>
       <CartProvider>
         <PaymentCardProvider>
-          <GestureHandlerRootView>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-          </GestureHandlerRootView>
+          <AddressProvider>
+            <GestureHandlerRootView>
+              <NavigationContainer>
+                <AppNavigator />
+              </NavigationContainer>
+            </GestureHandlerRootView>
+          </AddressProvider>
         </PaymentCardProvider>
       </CartProvider>
     </AuthProvider>

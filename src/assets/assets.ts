@@ -23,6 +23,7 @@ export const images = {
   rightArrow: require('../assets/Account/RightArrow.png'),
   userProfile: require('../assets/Account/UserProfile.png'),
   loginProfile: require('../assets/Account/LoginProfile.png'),
+  addCard: require('../assets/Account/addCard.png'),
   mastercard: require('../assets/Account/mastercard.png'),
   visa: require('../assets/Account/visa.png'),
   chip: require('../assets/Account/chip.png'),

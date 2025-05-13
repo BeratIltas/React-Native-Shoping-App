@@ -45,7 +45,7 @@ const ProfileScreen: React.FC = () => {
 
         <View style={styles.line} />
 
-        <TouchableOpacity style={styles.optionContainers}>
+        <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate("Addresses")} >
           <View style={styles.optionContainerLeft}>
             <Image source={images.addressBook} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Address Book</Text>

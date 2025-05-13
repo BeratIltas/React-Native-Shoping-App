@@ -33,60 +33,71 @@ const PaymentMethods = () => {
   return (
     <View style={styles.container}>
       <CommonHeader title="Payment Methods" icon={showDelete ? images.check : null} onPress={() => setShowDelete(false)} page="goBack" />
-      <ScrollView contentContainerStyle={styles.list}>
-        {cards.map((card) => (
-          <View
-            key={card.id}
-          >
-            <TouchableOpacity style={styles.creditCard}
-              onLongPress={() => setShowDelete(true)}
-              activeOpacity={1}
+      {cards.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Image style={{ tintColor: Colors.gray }} source={images.addCard}></Image>
+          <Text style={[typography.Header4, styles.emptyTextHeader]}>No cards yet!</Text>
+          <Text style={[typography.Body1Regular, styles.emptyText]}>Start by adding a payment method, and you'll see it here.</Text>
+        </View>
+      ) : (
+
+        <ScrollView contentContainerStyle={styles.list}>
+          {cards.map((card) => (
+            <View
+              key={card.id}
             >
+              <TouchableOpacity style={styles.creditCard}
+                onLongPress={() => setShowDelete(true)}
+                activeOpacity={1}
+              >
 
-              {showDelete && (
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => deleteCard(card.id)}
-                >
-                  <Image source={images.trash} style={{ tintColor: "white" }} />
-                </TouchableOpacity>
-              )}
+                {showDelete && (
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => deleteCard(card.id)}
+                  >
+                    <Image source={images.trash} style={{ tintColor: "red" }} />
+                  </TouchableOpacity>
+                )}
 
-              <Image style={styles.chipImage} source={images.chip} />
-              <View>
-                <Text style={styles.cardNumber}>**** **** **** {card.cardNumber.slice(-4)}</Text>
-              </View>
-              <View style={styles.cardBottomContainer}>
-                <View style={styles.cardInfoContainer}>
-                  <Text style={[typography.Body3Regular, { color: "white" }]} >Card Holder Name</Text>
-                  <Text style={[styles.cardName, typography.Body2]}>{card.nameOnCard}</Text>
+                <Image style={styles.chipImage} source={images.chip} />
+                <View>
+                  <Text style={styles.cardNumber}>**** **** **** {card.cardNumber.slice(-4)}</Text>
                 </View>
-                <View style={styles.cardInfoContainer}>
-                  <Text style={[typography.Body3Regular, { color: "white" }]} >Expiry Date</Text>
-                  <Text style={[styles.cardExpiry, typography.Body2]}>{card.expiry}</Text>
+                <View style={styles.cardBottomContainer}>
+                  <View style={styles.cardInfoContainer}>
+                    <Text style={[typography.Body3Regular, { color: "white" }]} >Card Holder Name</Text>
+                    <Text style={[styles.cardName, typography.Body2]}>{card.nameOnCard}</Text>
+                  </View>
+                  <View style={styles.cardInfoContainer}>
+                    <Text style={[typography.Body3Regular, { color: "white" }]} >Expiry Date</Text>
+                    <Text style={[styles.cardExpiry, typography.Body2]}>{card.expiry}</Text>
+                  </View>
+                  <View style={styles.cardInfoContainer}>
+                    {card?.cardNumber.startsWith("4") ? (
+                      <Image source={images.visa} />
+                    ) : (
+                      <Image source={images.mastercard} />
+                    )}
+                  </View>
                 </View>
-                <View style={styles.cardInfoContainer}>
-                  if{card?.id.startsWith("4") ?
-                    <Image source={images.visa} /> : <Image source={images.mastercard} />
-                  }</View>
+              </TouchableOpacity>
+              <View style={styles.defaultContainer} >
+                {card.id === defaultCardId ? (
+                  <Image source={images.checkboxOn} />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => setDefaultCard(card.id)}
+                  >
+                    <Image source={images.checkboxOff} />
+                  </TouchableOpacity>
+                )}
+                <Text style={typography.Body2Medium}>Use as default payment method</Text>
               </View>
-            </TouchableOpacity>
-            <View style={styles.defaultContainer} >
-              {card.id === defaultCardId ? (
-                <Image source={images.checkboxOn} />
-              ) : (
-                <TouchableOpacity
-                  onPress={() => setDefaultCard(card.id)}
-                >
-                  <Image source={images.checkboxOff} />
-                </TouchableOpacity>
-              )}
-              <Text style={typography.Body2Medium}>Use as default payment method</Text>
             </View>
-          </View>
-        ))}
-      </ScrollView>
-
+          ))}
+        </ScrollView>
+      )}
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
@@ -95,7 +106,6 @@ const PaymentMethods = () => {
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
       />
-
     </View>
   );
 };
@@ -105,6 +115,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
     paddingHorizontal: 5
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: "center",
+    paddingHorizontal:"10%",
+    
+  },
+  emptyTextHeader: {
+    fontSize: 18,
+    fontWeight: "semibold",
+    textAlign: 'center',
+    color: Colors.black
+  },
+  emptyText: {
+    color: Colors.gray,
+    textAlign:"center",
   },
   list: {
     padding: 16,
@@ -122,7 +149,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
-
+    padding:5,
   },
   chipImage: {
     resizeMode: "contain",

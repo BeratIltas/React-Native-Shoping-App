@@ -8,6 +8,7 @@ import { useCart } from '../components/Cart/CartContext'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../type'
 import { usePaymentCards } from '../components/Account/Payment/PaymentCardContext'
+import { useAddresses } from '../components/Account/Address/AddressContext'
 
 
 const Checkout = () => {
@@ -18,6 +19,8 @@ const Checkout = () => {
     const total = totalPrice - Number(discount) + shippingFee;
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const { defaultCard } = usePaymentCards();
+    const{defaultAddress}= useAddresses();
+
 
     useEffect(() => {
         const showListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -51,40 +54,54 @@ const Checkout = () => {
                     <View style={styles.addressContainer}>
                         <View style={styles.addressheader} >
                             <Text style={[typography.Body1, styles.title]}>Delivery Address</Text>
-                            <TouchableOpacity>
-                                <Text style={[typography.Body2Medium, styles.changeText]}>Change</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("Addresses")}>
+                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultAddress ? ("Change"):("Add")}</Text>
                             </TouchableOpacity>
                         </View>
+                        {defaultAddress ? (
                         <View style={styles.addressBody}>
                             <Image source={images.location} />
                             <View>
-                                <Text style={[typography.Body2, styles.subTitle]}>Home</Text>
+                                <Text style={[typography.Body2, styles.subTitle]}>{defaultAddress?.name}</Text>
                                 <Text style={[typography.Body2Regular, styles.addressText]} numberOfLines={1} ellipsizeMode="tail">
-                                    925 S Chugach St #APT 10, Alaska 99645
+                                    {[defaultAddress.street,defaultAddress.country,defaultAddress.city,defaultAddress.zip]}
                                 </Text>
                             </View>
                         </View>
+                        ) : (
+                            <View>
+                                <Text style={{textAlign:"center"}}>No saved address</Text>
+                            </View>
+                        )}
                     </View>
+
                     <View style={styles.divider} />
 
                     <View style={styles.paymentContainer}>
                         <View style={styles.addressheader}>
                             <Text style={[typography.Body1, styles.title]}>Payment Method</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("PaymentMethods")}>
-                                <Text style={[typography.Body2Medium, styles.changeText]}>Change</Text>
+                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultCard ? ("Change"):("Add")}</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.paymentBody}>
-                            <View>
-                                if{defaultCard?.id.startsWith("4") ?
-                                    <Image source={images.visa} /> : <Image source={images.mastercard} />
-                                }
+                        {defaultCard ? (
+                            <View style={styles.paymentBody}>
+                                <View>
+                                    if{defaultCard?.id.startsWith("4") ?
+                                        <Image source={images.visa} /> : <Image source={images.mastercard} />
+                                    }
+                                </View>
+                                <View>
+                                    <Text>**** **** **** {defaultCard?.cardNumber.slice(-4)}</Text>
+                                </View>
                             </View>
+                        ) : (
                             <View>
-                                <Text>**** **** **** {defaultCard?.cardNumber.slice(-4)}</Text>
+                                <Text style={{textAlign:"center"}}>No saved cards</Text>
                             </View>
-                        </View>
+                        )}
                     </View>
+
                     <View style={styles.divider} />
 
                     <View style={styles.orderSummaryContainer} >
@@ -195,9 +212,9 @@ const styles = StyleSheet.create({
         gap: 15,
     },
     paymentBody: {
-        resizeMode:"center",
+        resizeMode: "center",
         flexDirection: "row",
-        gap:"20",
+        gap: "20",
     },
     orderSummaryContainer: {
         paddingHorizontal: 20,
