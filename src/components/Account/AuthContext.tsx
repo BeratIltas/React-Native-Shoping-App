@@ -6,6 +6,8 @@ interface AuthContextProps {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -46,9 +48,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw error;
     }
   };
+  const resetPassword = async (email: string) => {
+    try {
+      await auth().sendPasswordResetEmail(email);
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error;
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, logout,resetPassword  }}>
       {children}
     </AuthContext.Provider>
   );

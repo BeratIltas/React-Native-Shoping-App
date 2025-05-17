@@ -6,13 +6,14 @@ import EmptyCart from '../components/Cart/EmptyCart';
 import TotalCart from '../components/Cart/TotalCart';
 import CommonHeader from '../navigation/Header/CommonHeader';
 import AdviceProduct from '../components/AdviceProduct';
+import { images } from '../assets/assets';
 
 const Cart = () => {
-  const { cartItems, totalPrice } = useCart();
+  const { cartItems, totalPrice,clearCart } = useCart();
 
   return (
     <View style={styles.container}>
-      <CommonHeader title="Cart" icon={null} iconleft={null} page="MainApp" />
+      <CommonHeader title="Cart"  icon={totalPrice!==0?(images.trash):(null)} onPress={totalPrice!==0? clearCart:undefined} iconleft={null} page="MainApp" />
       {cartItems.length === 0 ? (
         <EmptyCart />
       ) : (

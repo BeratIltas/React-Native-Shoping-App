@@ -16,7 +16,10 @@ export type RootStackParamList = {
     HelpScreen:undefined;
     ProfileScreen:undefined;
     Account:undefined;
+    ForgetPassword:undefined;
     PaymentMethods:undefined;
+    AddAddressPage:undefined;
+    NotificationsScreen:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 

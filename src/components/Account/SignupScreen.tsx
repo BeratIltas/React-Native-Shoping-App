@@ -1,9 +1,19 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Dimensions, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  Image,
+} from 'react-native';
 import { useAuth } from './AuthContext'; // Context API'den kullanıcı durumu erişimi
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -15,65 +25,125 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signup } = useAuth(); // Context API'den signup fonksiyonunu alıyoruz
-
+  const { signup } = useAuth();
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [touched, setTouched] = useState({ username: false, email: false, password: false });
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
-
+  const usernameRef = useRef<TextInput>(null);
   const handleSignup = async () => {
+
+    const newTouched = {
+      email: email.trim() === '',
+      password: password.trim() === '',
+      username: username.trim() === '',
+    };
+    setTouched(newTouched);
     try {
-      await signup(email, password); // Kayıt işlemini başlat
-      Alert.alert('Başarılı!', 'Kayıt işlemi tamamlandı!');
+      await signup(email, password);
+      Alert.alert('Success!', 'Registration completed successfully!');
     } catch (error: any) {
-      Alert.alert('Hata!', error.message || 'Kayıt işlemi yapılamadı.');
+      if (error.code === 'auth/email-already-in-use') {
+        setTouched(prev => ({ ...prev, email: true }));
+        setErrorMsg('This email is already in use.');
+      } else if (error.code === 'auth/invalid-email') {
+        setTouched(prev => ({ ...prev, email: true }));
+        setErrorMsg('Invalid email address.');
+      } else if (error.code === 'auth/weak-password') {
+        setTouched(prev => ({ ...prev, password: true }));
+        setErrorMsg('Password is too weak. It must be at least 6 characters.');
+      } else {
+        setErrorMsg('An error occurred during registration.');
+      }
     }
+
+
   };
+
 
   return (
     <View style={styles.container}>
-      <View style={styles.upContainerBg}>
-        <View style={styles.upContainer}>
-          <Image source={images.loginProfile} style={styles.profileIcon} />
-        </View>
-      </View>
+      <Image style={styles.upContainerBg} source={images.LoginBackground}></Image>
+
+
       <View style={styles.downContainer}>
         <Text style={[typography.Header2, styles.title]}>Sign Up</Text>
+
+        {errorMsg ? (
+          <Text style={styles.errorText}>{errorMsg}</Text>
+        ) : null}
+
         <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            value={username}
-            onChangeText={(text) => setUsername(text)}
-            returnKeyType="next"
-            onSubmitEditing={() => emailRef.current?.focus()}
-            blurOnSubmit={false}
-          />
-          <TextInput
-            ref={emailRef}
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current?.focus()}
-            blurOnSubmit={false}
-          />
-          <TextInput
-            ref={passwordRef}
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            returnKeyType="done"
-            onSubmitEditing={handleSignup}
-          />
-          <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
-            <Text style={[typography.Body1, styles.loginText]}>Sign Up</Text>
+          <View style={[styles.inputWrapper, touched.username && username.trim() === '' && styles.inputError]}>
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor={Colors.softGray}
+              value={username}
+              onChangeText={setUsername}
+              returnKeyType="next"
+              onSubmitEditing={() => usernameRef.current?.focus()}
+              onBlur={() => setTouched(prev => ({ ...prev, username: true }))}
+              blurOnSubmit={false}
+            />
+          </View>
+
+          <View style={[styles.inputWrapper, touched.email && email.trim() === '' && styles.inputError]}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email address"
+              placeholderTextColor={Colors.softGray}
+              onChangeText={setEmail}
+              value={email}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
+            />
+          </View>
+
+          <View style={[styles.inputWrapper, touched.password && password.trim() === '' && styles.inputError]}>
+            <TextInput
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Enter your password"
+              placeholderTextColor={Colors.softGray}
+              secureTextEntry={!showPassword}
+              onChangeText={setPassword}
+              value={password}
+              autoCapitalize="none"
+              onBlur={() => setTouched(prev => ({ ...prev, password: true }))}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(prev => !prev)}
+              style={styles.eyeIcon}
+            >
+              <Image
+                source={showPassword ? images.EyeOff : images.Eye}
+                style={styles.eyeImage}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            onPress={handleSignup}
+            activeOpacity={0.8}
+            style={{ width: '80%' }}
+          >
+            <LinearGradient
+              colors={['#B210FF', '#EECE13']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.signupButton}
+            >
+              <Text style={[typography.Body1, styles.signupText]}>Sign Up</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={onLoginNavigate}>
-          <Text style={styles.linkText}>Already have an account? Log In</Text>
+
+        <TouchableOpacity onPress={onLoginNavigate} style={{ paddingVertical: 5, paddingHorizontal: 10 }}>
+          <Text style={[typography.Body2Medium, styles.linkText]}>
+            Already have an account? Log In
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -83,72 +153,100 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.darkGray,
+    gap: 50,
+    backgroundColor: 'white',
   },
   upContainerBg: {
-    flex: 1,
-    backgroundColor: Colors.whiteGray,
+    width: '100%',
+    height: 120,
+    transform: [{ scaleX: -1 }]
   },
   upContainer: {
     flex: 1,
+    backgroundColor: Colors.darkGray,
+    borderBottomRightRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.darkGray,
-    borderBottomLeftRadius: 60,
-  },
-  profileIcon: {
-    marginTop: '15%',
-    marginBottom: '10%',
-    resizeMode: 'contain',
-    flex: 1,
   },
   downContainer: {
-    flex: 1.8,
-    backgroundColor: Colors.whiteGray,
-    borderTopRightRadius: 60,
-  },
-  inputContainer: {
-    alignItems: 'center',
+    flex: 3,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 60,
   },
   title: {
+    textAlign: "center",
     color: Colors.darkGray,
     marginBottom: 8,
-    fontWeight: 'bold',
+    fontWeight: "900",
     padding: 30,
-    paddingBottom: 10,
     paddingLeft: width * 0.1,
     textShadowRadius: 1,
     textShadowColor: Colors.gray,
   },
-  input: {
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: -10,
+  },
+  inputContainer: {
+    alignItems: 'center',
+  },
+  inputWrapper: {
     width: '80%',
     height: 50,
-    borderColor: Colors.gray,
+    borderColor: Colors.lighterGray,
     borderWidth: 1,
-    backgroundColor: Colors.whiteGray,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
     color: Colors.black,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  passwordInput: {
+    paddingRight: 45,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 15,
+    top: 13,
+  },
+  eyeImage: {
+    width: 24,
+    height: 24,
+    tintColor: Colors.gray,
+  },
+  signupButton: {
+    width: '100%',
+    height: 52,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#B210FF',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  signupText: {
+    color: Colors.white,
+    fontWeight: '700',
+    fontSize: 18,
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0,0,0,0.15)',
+    textShadowRadius: 2,
   },
   linkText: {
     color: Colors.darkGray,
     textDecorationLine: 'underline',
     textAlign: 'center',
-  },
-  loginButton: {
-    backgroundColor: Colors.orange,
-    width: '80%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  loginText: {
-    color: Colors.white,
-    textShadowColor: Colors.whiteGray,
-    textShadowRadius: 1,
+    marginTop: 10,
   },
 });
 

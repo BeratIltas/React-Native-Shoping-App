@@ -1,8 +1,11 @@
-import { Dimensions, StyleSheet, View, Text, TouchableOpacity, ImageBackground } from "react-native";
+import { Dimensions, StyleSheet, View, Text, TouchableOpacity, ImageBackground, Platform } from "react-native";
 import LottieView from "lottie-react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigation";
 import Colors from "../assets/colors";
+import { RootStackParamList } from "../../type";
+import messaging from '@react-native-firebase/messaging';
+import { useEffect } from "react";
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 const { height, width } = Dimensions.get('window');
 
@@ -30,7 +33,6 @@ const Onboarding: React.FC<Props> = ({ navigation }) => {
               Make an order sitting on a sofa. Our new service makes it easy for you to shop.
             </Text>
           </View>
-
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
-    backgroundColor:Colors.black
+    backgroundColor: Colors.black
   },
   container: {
     flex: 1,

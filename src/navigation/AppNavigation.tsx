@@ -14,6 +14,8 @@ import ProfileScreen from "../components/Account/ProfileScreen";
 import Account from "../screens/Account";
 import PaymentMethods from "../components/Account/Payment/PaymentMethods";
 import Addresses from "../components/Account/Address/Addresses";
+import ForgetPassword from "../components/Account/ResetPassword/ForgetPassword";
+import NotificationsScreen from "../components/Account/NotificationsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,8 +33,12 @@ const AppNavigator = () => {
       <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
       <Stack.Screen name="Addresses" component={Addresses} />
       <Stack.Screen name="Account" component={Account} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       <Stack.Screen name="HelpScreen" component={HelpScreen} />
+      <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+
+      
 
     </Stack.Navigator>
   );

@@ -19,7 +19,7 @@ const TotalCart: React.FC<Props> = ({ totalPrice }) => {
         <Text style={[typography.Body2Medium, styles.label]}>Total</Text>
         <Text style={[typography.Body1, styles.amount]}>{totalPrice.toFixed(2)} $</Text>
       </View>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Checkout")}>
+      <TouchableOpacity style={styles.button} onPress={totalPrice!==0?(() => navigation.navigate("Checkout")):(undefined)}>
         <Text style={styles.buttonText}>Check Out</Text>
       </TouchableOpacity>
     </View>

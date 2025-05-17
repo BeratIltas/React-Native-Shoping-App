@@ -15,8 +15,8 @@ const Checkout = () => {
     const [query, setQuery] = useState<string>("");
     const [discount, setDiscount] = useState<string>("0");
     const { cartItems, totalPrice } = useCart();
-    const shippingFee = 50;
-    const total = totalPrice - Number(discount) + shippingFee;
+    const shippingFee = "50";
+    const total = totalPrice - Number(discount) + Number(shippingFee);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const { defaultCard } = usePaymentCards();
     const{defaultAddress}= useAddresses();
@@ -87,8 +87,8 @@ const Checkout = () => {
                         {defaultCard ? (
                             <View style={styles.paymentBody}>
                                 <View>
-                                    if{defaultCard?.id.startsWith("4") ?
-                                        <Image source={images.visa} /> : <Image source={images.mastercard} />
+                                    if{defaultCard?.cardNumber.startsWith("4") ?
+                                        <Image source={images.visa} style={{tintColor:"blue"}}/> : <Image source={images.mastercard} />
                                     }
                                 </View>
                                 <View>

@@ -19,6 +19,7 @@ const Addresses = () => {
 
             {addresses.length === 0 ? (
                 <View style={styles.emptyContainer}>
+                    <Image style={{tintColor:Colors.gray}} source={images.HomeAddress}/>
                     <Text style={[typography.Header4, styles.emptyTextHeader]}>No addresses yet!</Text>
                     <Text style={[typography.Body1Regular, styles.emptyText]}>
                         Start by adding an address, and you'll see it here.

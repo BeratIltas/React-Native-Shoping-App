@@ -65,7 +65,7 @@ const ProfileScreen: React.FC = () => {
 
         <View style={styles.line} />
 
-        <TouchableOpacity style={styles.optionContainers}>
+        <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate("NotificationsScreen")} >
           <View style={styles.optionContainerLeft}>
             <Image source={images.bell} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Notifications</Text>

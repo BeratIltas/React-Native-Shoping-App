@@ -64,7 +64,7 @@ const Saved = () => {
 
   return (
     <View>
-      <CommonHeader page="Saved" title="Saved" iconleft={null} />
+      <CommonHeader page="Saved" title="Saved" iconleft={null} icon={null} onPress={undefined}/>
       <FlatList
         data={productsArray}
         contentContainerStyle={styles.container}

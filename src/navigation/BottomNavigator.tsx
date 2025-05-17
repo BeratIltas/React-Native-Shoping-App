@@ -19,14 +19,15 @@ export default function BottomNavigator() {
                 tabBarStyle: {
                     backgroundColor: Colors.white,
                     elevation: 0,
-                    borderTopWidth: 0,
+                    borderTopWidth: 0,  
                 },
                 tabBarHideOnKeyboard: true,
                 animationEnabled: false,
+                
             })}
         >
             <Tab.Screen name="Home" component={HomePage} options={{
-                tabBarIcon: ({ focused, color }) => (
+                tabBarIcon: ({ focused, color}) => (
                     <Image source={images.homeIcon} resizeMode="contain"
                         style={{ width: 24, height: 24, tintColor: focused ? '#000' : '#888' }} />
                 )
