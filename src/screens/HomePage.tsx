@@ -63,6 +63,7 @@ const HomePage = () => {
         ) : (
           <FlatList
             data={productsArray}
+            removeClippedSubviews={false}
             contentContainerStyle={styles.container}
             keyExtractor={(item: any) => String(item?._id)}
             renderItem={renderItem}

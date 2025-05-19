@@ -5,6 +5,7 @@ import typography from '../assets/typography';
 import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from './Cart/CartContext';
+import { images } from '../assets/assets';
 
 const { height, width } = Dimensions.get('window');
 
@@ -27,7 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
   const handleAddToCart = () => {
     if (addToCardRef.current) {
       addToCardRef.current.play(0, 75);
-      addToCart({ ...item, quantity: 1 }) 
+      addToCart({ ...item, quantity: 1 })
     }
   };
 
@@ -55,8 +56,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
         </TouchableOpacity>
       </View>
 
-
-
       <TouchableOpacity
         style={styles.productView}
         onPress={() =>
@@ -66,11 +65,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
         }
       >
         <Image source={{ uri: item.image }} style={styles.img} />
+        <View style={styles.starContainer} >
+          <Image source={images.star} style={{height:20,width:20}} />
+          <Text style={{}} >4.3</Text>
+        </View>
         <View style={styles.productDetail}>
           <View style={styles.productDetailText}>
             <Text
               style={typography.Body1}
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               {item.title}
@@ -96,21 +99,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 const styles = StyleSheet.create({
   productViewContainer: {
     height: height * 0.3,
-    width: width * 0.43,//46 tam
+    width: width * 0.40,//46 tam
     flex: 1,
     backgroundColor: Colors.whiteGray
   },
-  heartViewContainer:{
-    backgroundColor:'red',
-    borderRadius:50
-
+  heartViewContainer: {
+    borderRadius: 50
   },
   productView: {
     flex: 1,
-    borderWidth: 0.2,
     margin: 5,
     borderRadius: 10,
-    marginHorizontal: 10,
     borderColor: Colors.black,
     backgroundColor: Colors.white,
     overflow: 'hidden',
@@ -120,12 +119,17 @@ const styles = StyleSheet.create({
     flex: 5,
     resizeMode: 'contain',
     width: '100%',
-    height: '70%',
+    height: '100%',
+  },
+  starContainer:{
+    flex:0.7,
+    flexDirection:"row",
+    gap:5,
+    paddingHorizontal:10,
   },
   productDetail: {
     flexDirection: 'row',
-    flex: 1,
-    padding: 15,
+    paddingHorizontal: 15,
     justifyContent: 'space-between',
   },
   heart: {

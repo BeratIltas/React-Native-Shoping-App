@@ -100,6 +100,8 @@ const ProductsPage = ({ route }: any) => {
                     contentContainerStyle={styles.listContainer}
                     numColumns={2}
                     columnWrapperStyle={styles.columnWrapper}
+                    removeClippedSubviews={false}
+
                 />
             )}
         </View>

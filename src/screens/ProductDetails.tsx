@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import CommonHeader from '../navigation/Header/CommonHeader';
-import { ProductProps } from '../../type';
+import { ProductProps, RootStackParamList } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
@@ -10,6 +10,8 @@ import Share from 'react-native-share'; // Share kütüphanesini ekliyoruz.
 import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import LottieView from 'lottie-react-native';
 import { useCart } from '../components/Cart/CartContext';
+import typography from '../assets/typography';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,6 +22,7 @@ const ProductDetails = ({ route }: any) => {
   const [productsArray, setProductsArray] = useState([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
   const addToCardRef = useRef<LottieView | null>(null);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { addToCart } = useCart();
 
   const getData = async () => {
@@ -75,7 +78,7 @@ const ProductDetails = ({ route }: any) => {
   return (
     <View style={styles.container}>
       <CommonHeader
-        page="MainApp"
+        page="goBack"
         title={productData?.title || "Details"}
         icon={images.shareIcon}
         onPress={handleShare}
@@ -97,6 +100,13 @@ const ProductDetails = ({ route }: any) => {
                 <Text style={styles.title}>{productData?.title}</Text>
                 <Text style={styles.price}>${productData?.price}</Text>
               </View>
+              <TouchableOpacity onPress={()=> navigation.navigate('ReviewsScreen')} style={styles.starRow}>
+                <Image style={{ height: 22, width: 22 }} source={images.star} />
+                <View style={{ flexDirection: "row", gap:5}} >
+                  <Text style={[{fontWeight:"bold",textDecorationLine: 'underline'},typography.Body1Medium]}>4.0/5</Text>
+                  <Text style={[{},typography.Body1Medium]}>(45 reviews)</Text>
+                </View>
+              </TouchableOpacity>
               <Text style={styles.description}>{productData?.description}</Text>
             </View>
 
@@ -108,7 +118,7 @@ const ProductDetails = ({ route }: any) => {
           </ScrollView>
 
           <View style={styles.addToCartContainer}>
-            <TouchableOpacity style={styles.addToCartButton} 
+            <TouchableOpacity style={styles.addToCartButton}
               onPress={() => {
                 if (productData?._id) {
                   addToCart({ ...productData, quantity: 1 });
@@ -157,12 +167,12 @@ const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
     backgroundColor: Colors.white,
+    gap: 10,
   },
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
   },
   title: {
     fontSize: 22,
@@ -173,6 +183,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: Colors.green,
+  },
+  starRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 10
   },
   description: {
     fontSize: 16,

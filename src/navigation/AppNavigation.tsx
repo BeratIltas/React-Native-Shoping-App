@@ -15,7 +15,8 @@ import Account from "../screens/Account";
 import PaymentMethods from "../components/Account/Payment/PaymentMethods";
 import Addresses from "../components/Account/Address/Addresses";
 import ForgetPassword from "../components/Account/ResetPassword/ForgetPassword";
-import NotificationsScreen from "../components/Account/NotificationsScreen";
+import NotificationsScreen from "../components/Account/Notification/NotificationsScreen";
+import ReviewsScreen from "../components/ReviewsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,6 +29,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="ProductsPage" component={ProductsPage} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
+      <Stack.Screen name="ReviewsScreen" component={ReviewsScreen} />
       <Stack.Screen name="Cart" component={Cart} />
       <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethods} />

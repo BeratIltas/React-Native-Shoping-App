@@ -10,7 +10,7 @@ import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/Search/SearchBar';
 import RecentSearches from '../components/Search/RecentSearches';
 import { images } from '../assets/assets';
-import { RootStackParamList } from '../navigation/AppNavigation';
+import { RootStackParamList } from '../../type';
 
 const { height } = Dimensions.get('window');
 
@@ -107,6 +107,8 @@ const SearchScreen = () => {
           contentContainerStyle={styles.listContainer}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
+          removeClippedSubviews={false}
+
         />
       )}
     </View>

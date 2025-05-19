@@ -94,7 +94,6 @@ const HelpScreen = () => {
     );
 
     useEffect(() => {
-        // Yeni mesaj geldiğinde aşağı kaydır
         if (flatListRef.current) {
             flatListRef.current.scrollToOffset({ offset: 0, animated: true });
         }
@@ -103,7 +102,7 @@ const HelpScreen = () => {
 
 
     const handleCall = () => {
-        const phoneNumber = 'tel:+905555555555'; // Numaranızı burada belirtin
+        const phoneNumber = 'tel:+905555555555';
         Linking.openURL(phoneNumber).catch(err =>
             console.error('Arama başlatılamadı:', err)
         );
@@ -116,8 +115,7 @@ const HelpScreen = () => {
                 title='Help'
                 icon={images.phone}
                 onPress={handleCall}
-                page='MainApp'  
-                
+                page='goBack'  
             />
             <View style={styles.divider} />
             <KeyboardAvoidingView
@@ -133,6 +131,7 @@ const HelpScreen = () => {
                     contentContainerStyle={styles.messagesList}
                     inverted
                     keyboardShouldPersistTaps="handled"
+                    removeClippedSubviews={false}
                 />
 
                 <View style={styles.inputContainer}>
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     messageRight: {
-        backgroundColor: '#000',
+        backgroundColor: Colors.gray,
         alignSelf: 'flex-end',
     },
     messageText: {
@@ -227,7 +226,7 @@ const styles = StyleSheet.create({
     sendButton: {
         width: 40,
         height: 40,
-        backgroundColor: '#000',
+        backgroundColor: Colors.gray,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',

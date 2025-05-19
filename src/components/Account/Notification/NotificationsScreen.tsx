@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import CommonHeader from '../../navigation/Header/CommonHeader';
-import Colors from '../../assets/colors';
+import CommonHeader from '../../../navigation/Header/CommonHeader';
+import Colors from '../../../assets/colors';
+import typography from '../../../assets/typography';
+import { images } from '../../../assets/assets';
 
 type Notification = {
   id: string;
@@ -11,29 +13,29 @@ type Notification = {
   receivedAt: string;
 };
 
-const fakeNotifications: Notification[] = [
-  {
-    id: '1',
-    title: 'Welcome!',
-    body: 'Thank you for signing up to our app.',
-    receivedAt: '2025-05-18 10:00',
-  },
-  {
-    id: '2',
-    title: 'Update',
-    body: 'New features have been added, check them out now!',
-    receivedAt: '2025-05-17 18:30',
-  },
-  {
-    id: '3',
-    title: 'Reminder',
-    body: 'Don’t forget to update your profile.',
-    receivedAt: '2025-05-16 09:15',
-  },
-];
+// const fakeNotifications: Notification[] = [
+//   {
+//     id: '1',
+//     title: 'Welcome!',
+//     body: 'Thank you for signing up to our app.',
+//     receivedAt: '2025-05-18 10:00',
+//   },
+//   {
+//     id: '2',
+//     title: 'Update',
+//     body: 'New features have been added, check them out now!',
+//     receivedAt: '2025-05-17 18:30',
+//   },
+//   {
+//     id: '3',
+//     title: 'Reminder',
+//     body: 'Don’t forget to update your profile.',
+//     receivedAt: '2025-05-16 09:15',
+//   },
+// ];
 
 const ForegroundNotificationsScreen = () => {
-  const [notifications, setNotifications] = useState<Notification[]>(fakeNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -55,6 +57,13 @@ const ForegroundNotificationsScreen = () => {
   return (
     <View style={styles.container}>
       <CommonHeader title="Notifications" page="goBack" icon={null} onPress={undefined} />
+            {notifications.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Image style={{ tintColor: Colors.gray }} source={images.Bell64}></Image>
+          <Text style={[typography.Header4, styles.emptyTextHeader]}>You haven’t gotten any notifications yet!</Text>
+          <Text style={[typography.Body1Regular, styles.emptyText]}>We’ll alert you when something cool happens.</Text>
+        </View>
+      ) : (
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {notifications.length === 0 ? (
           <Text style={styles.emptyText}>No notifications yet.</Text>
@@ -70,6 +79,7 @@ const ForegroundNotificationsScreen = () => {
           ))
         )}
       </ScrollView>
+      )}
     </View>
   );
 };
@@ -79,6 +89,22 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+  },
+    emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: "center",
+    paddingHorizontal:"15%",
+    gap:10
+  },
+  emptyTextHeader: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: Colors.black
+  },
+  emptyText: {
+    color: Colors.gray,
+    textAlign:"center",
   },
   notificationCard: {
     backgroundColor: '#fff',
@@ -113,12 +139,7 @@ const styles = StyleSheet.create({
     color: '#555',
     lineHeight: 20,
   },
-  emptyText: {
-    fontSize: 16,
-    color: '#999',
-    textAlign: 'center',
-    marginTop: 50,
-  },
+
 });
 
 export default ForegroundNotificationsScreen;

@@ -36,6 +36,8 @@ const AdviceProduct = ({ products, onHeartPress, likedProducts }: {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        removeClippedSubviews={false}
+
       />
     </View>
   );
