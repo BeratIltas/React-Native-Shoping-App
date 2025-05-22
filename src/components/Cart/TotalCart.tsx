@@ -1,25 +1,37 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid, Platform } from 'react-native';
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../type';
+import { useCart } from './CartContext';
 
-type Props = {
-  totalPrice: number;
-};
 
-const TotalCart: React.FC<Props> = ({ totalPrice }) => {
+const TotalCart: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+  const {totalPrice } = useCart();
+  const handleCheckout = () => {
+    if (totalPrice === 0) {
+      if (Platform.OS === 'android') {
+        ToastAndroid.showWithGravity(
+          'Your cart is empty! Please add products before checkout.',
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP,
+        );
+      } else {
+      }
+      return;
+    }
+    navigation.navigate('Checkout');
+  };
   return (
     <View style={styles.container}>
       <View>
         <Text style={[typography.Body2Medium, styles.label]}>Total</Text>
         <Text style={[typography.Body1, styles.amount]}>{totalPrice.toFixed(2)} $</Text>
       </View>
-      <TouchableOpacity style={styles.button} onPress={totalPrice!==0?(() => navigation.navigate("Checkout")):(undefined)}>
+      <TouchableOpacity style={styles.button} onPress={handleCheckout}>
         <Text style={styles.buttonText}>Check Out</Text>
       </TouchableOpacity>
     </View>

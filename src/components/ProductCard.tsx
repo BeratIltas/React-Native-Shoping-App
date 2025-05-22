@@ -67,7 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
         <Image source={{ uri: item.image }} style={styles.img} />
         <View style={styles.starContainer} >
           <Image source={images.star} style={{height:20,width:20}} />
-          <Text style={{}} >4.3</Text>
+          <Text style={{}} >4.2</Text>
         </View>
         <View style={styles.productDetail}>
           <View style={styles.productDetailText}>

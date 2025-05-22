@@ -1,39 +1,68 @@
 import React, { createContext, useEffect, useState, useContext } from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { getAuth, FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { getApp } from '@react-native-firebase/app';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AuthContextProps {
   user: FirebaseAuthTypes.User | null;
+  profilePhoto: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
-
+  updateProfile: (displayName: string, photoBase64OrUri: string | null) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
+const PROFILE_PHOTO_KEY = '@profile_photo';
+const auth = getAuth(getApp());
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       setUser(authUser);
     });
-    return unsubscribe; // Cleanup subscription
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const refreshUser = async () => {
+      const currentUser = auth.currentUser;
+      await currentUser?.reload();
+      setUser(auth.currentUser);
+    };
+    refreshUser();
+  }, []);
+
+  useEffect(() => {
+    const loadSavedPhoto = async () => {
+      const savedPhoto = await AsyncStorage.getItem(PROFILE_PHOTO_KEY);
+      if (savedPhoto) {
+        setProfilePhoto(savedPhoto);
+      }
+    };
+    loadSavedPhoto();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      await auth.signInWithEmailAndPassword(email, password);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
     }
   };
 
-  const signup = async (email: string, password: string) => {
+  const signup = async (email: string, password: string, displayName: string) => {
     try {
-      await auth().createUserWithEmailAndPassword(email, password);
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      await userCredential.user.updateProfile({ displayName });
+      await userCredential.user.reload();
+      setUser(auth.currentUser);
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
@@ -42,23 +71,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      await auth().signOut();
+      await auth.signOut();
+      setProfilePhoto(null);
+      await AsyncStorage.removeItem(PROFILE_PHOTO_KEY);
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
     }
   };
+
   const resetPassword = async (email: string) => {
     try {
-      await auth().sendPasswordResetEmail(email);
+      await auth.sendPasswordResetEmail(email);
     } catch (error) {
       console.error('Reset password error:', error);
       throw error;
     }
   };
 
+  const updateProfile = async (displayName: string, photoBase64OrUri: string | null) => {
+    try {
+      if (user) {
+        await user.updateProfile({ displayName });
+        await user.reload();
+
+        const refreshedUser = auth.currentUser;
+        setUser(refreshedUser);
+
+        if (photoBase64OrUri) {
+          await AsyncStorage.setItem(PROFILE_PHOTO_KEY, photoBase64OrUri);
+          setProfilePhoto(photoBase64OrUri);
+        }
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout,resetPassword  }}>
+    <AuthContext.Provider value={{ user, profilePhoto, login, signup, logout, resetPassword, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

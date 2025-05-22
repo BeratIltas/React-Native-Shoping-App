@@ -23,10 +23,10 @@ const Cart = () => {
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingBottom: 120 }}
         />
-
+        
       )}
       <View style={styles.totalCartContainer}>
-        <TotalCart totalPrice={totalPrice} />
+        <TotalCart/>
       </View>
     </View>
   );

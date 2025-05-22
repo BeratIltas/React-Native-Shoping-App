@@ -64,7 +64,7 @@ const Checkout = () => {
                             <View>
                                 <Text style={[typography.Body2, styles.subTitle]}>{defaultAddress?.name}</Text>
                                 <Text style={[typography.Body2Regular, styles.addressText]} numberOfLines={1} ellipsizeMode="tail">
-                                    {[defaultAddress.street,defaultAddress.country,defaultAddress.city,defaultAddress.zip]}
+                                    {[defaultAddress.street,defaultAddress.country,defaultAddress.city,defaultAddress.zip].join(' ')}
                                 </Text>
                             </View>
                         </View>
@@ -87,7 +87,7 @@ const Checkout = () => {
                         {defaultCard ? (
                             <View style={styles.paymentBody}>
                                 <View>
-                                    if{defaultCard?.cardNumber.startsWith("4") ?
+                                    {defaultCard?.cardNumber.startsWith("4") ?
                                         <Image source={images.visa} style={{tintColor:"blue"}}/> : <Image source={images.mastercard} />
                                     }
                                 </View>

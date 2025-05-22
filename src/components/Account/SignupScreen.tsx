@@ -22,26 +22,26 @@ type SignupScreenProps = {
 };
 
 const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
-  const [username, setUsername] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signup } = useAuth();
   const [errorMsg, setErrorMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [touched, setTouched] = useState({ username: false, email: false, password: false });
+  const [touched, setTouched] = useState({ displayName: false, email: false, password: false });
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
-  const usernameRef = useRef<TextInput>(null);
+  const displayNameRef = useRef<TextInput>(null);
   const handleSignup = async () => {
 
     const newTouched = {
       email: email.trim() === '',
       password: password.trim() === '',
-      username: username.trim() === '',
+      displayName: displayName.trim() === '',
     };
     setTouched(newTouched);
     try {
-      await signup(email, password);
+      await signup(email, password, displayName);
       Alert.alert('Success!', 'Registration completed successfully!');
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
@@ -57,8 +57,6 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
         setErrorMsg('An error occurred during registration.');
       }
     }
-
-
   };
 
 
@@ -75,16 +73,16 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
         ) : null}
 
         <View style={styles.inputContainer}>
-          <View style={[styles.inputWrapper, touched.username && username.trim() === '' && styles.inputError]}>
+          <View style={[styles.inputWrapper, touched.displayName && displayName.trim() === '' && styles.inputError]}>
             <TextInput
               style={styles.input}
               placeholder="Username"
               placeholderTextColor={Colors.softGray}
-              value={username}
-              onChangeText={setUsername}
+              value={displayName}
+              onChangeText={setDisplayName}
               returnKeyType="next"
-              onSubmitEditing={() => usernameRef.current?.focus()}
-              onBlur={() => setTouched(prev => ({ ...prev, username: true }))}
+              onSubmitEditing={() => displayNameRef.current?.focus()}
+              onBlur={() => setTouched(prev => ({ ...prev, displayName: true }))}
               blurOnSubmit={false}
             />
           </View>

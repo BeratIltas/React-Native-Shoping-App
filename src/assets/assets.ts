@@ -12,6 +12,7 @@ export const images = {
   deleteIcon: require('../assets/Search/DeleteButton.png'),
   shareIcon: require('./ProductPage/ShareIcon.png'),
   star: require('./ProductPage/Star.png'),
+  headerLogo: require('../assets/HomePage/headerLogo.png'),
   apparelIcon: require('../assets/HomePage/Apparel.png'),
   electronicIcon: require('../assets/HomePage/Electronic.png'),
   furnitureIcon: require('../assets/HomePage/Furniture.png'),

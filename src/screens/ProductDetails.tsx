@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity, ToastAndroid, Platform } from 'react-native'; // ToastAndroid ve Platform eklendi
 import CommonHeader from '../navigation/Header/CommonHeader';
 import { ProductProps, RootStackParamList } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
 import AdviceProduct from '../components/AdviceProduct';
-import Share from 'react-native-share'; // Share kütüphanesini ekliyoruz.
-import { transparent } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import Share from 'react-native-share';
 import LottieView from 'lottie-react-native';
 import { useCart } from '../components/Cart/CartContext';
 import typography from '../assets/typography';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import ExpandableSection from '../components/ExpandableSection';
 
 const { width, height } = Dimensions.get('window');
 
@@ -100,31 +100,52 @@ const ProductDetails = ({ route }: any) => {
                 <Text style={styles.title}>{productData?.title}</Text>
                 <Text style={styles.price}>${productData?.price}</Text>
               </View>
-              <TouchableOpacity onPress={()=> navigation.navigate('ReviewsScreen')} style={styles.starRow}>
+              <TouchableOpacity onPress={() => navigation.navigate('ReviewsScreen')} style={styles.starRow}>
                 <Image style={{ height: 22, width: 22 }} source={images.star} />
-                <View style={{ flexDirection: "row", gap:5}} >
-                  <Text style={[{fontWeight:"bold",textDecorationLine: 'underline'},typography.Body1Medium]}>4.0/5</Text>
-                  <Text style={[{},typography.Body1Medium]}>(45 reviews)</Text>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Text style={[{ fontWeight: "bold", textDecorationLine: 'underline' }, typography.Body1Medium]}>4.0/5</Text>
+                  <Text style={[{}, typography.Body1Medium]}>(45 reviews)</Text>
                 </View>
               </TouchableOpacity>
               <Text style={styles.description}>{productData?.description}</Text>
             </View>
-
+            <View style={styles.divider} />
+            <ExpandableSection title="Shipping Info">
+              <Text style={{ fontSize: 15, lineHeight: 22,paddingBottom:10, color: "#555" }}>
+                Your order will be shipped within 3-5 business days. Tracking
+                information will be provided once dispatched.
+              </Text>
+            </ExpandableSection>
+            <View style={styles.divider} />
+            <ExpandableSection title="Return Policy">
+              <Text style={{ fontSize: 15, lineHeight: 22,paddingBottom:10, color: "#555" }}>
+                The return process is valid within 14 days after the product is received.
+              </Text>
+            </ExpandableSection>
+            <View style={styles.divider} />
             <AdviceProduct
               products={productsArray}
               onHeartPress={handleHeartPress}
               likedProducts={likedProducts}
             />
+
           </ScrollView>
 
           <View style={styles.addToCartContainer}>
-            <TouchableOpacity style={styles.addToCartButton}
+            <TouchableOpacity
+              style={styles.addToCartButton}
               onPress={() => {
                 if (productData?._id) {
                   addToCart({ ...productData, quantity: 1 });
+
+                  if (Platform.OS === 'android') {
+                    ToastAndroid.show('Sepete eklendi', ToastAndroid.SHORT);
+                  }
+                  addToCardRef.current?.play();
                 } else {
                   console.error("Product ID is missing");
                 }
+
               }}>
               <LottieView
                 ref={addToCardRef}
@@ -147,10 +168,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
+  divider: {
+    height: 0.5,
+    backgroundColor: Colors.extraLightGray,
+  },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: Colors.white,
-    paddingBottom: height * 0.2,
+    paddingBottom: height * 0.15,
   },
   imgView: {
     width: width,
@@ -197,7 +222,7 @@ const styles = StyleSheet.create({
   },
   addToCartContainer: {
     position: 'absolute',
-    bottom: '8%',
+    bottom: '7%',
     left: '5%',
     right: '5%',
     backgroundColor: 'transparent',

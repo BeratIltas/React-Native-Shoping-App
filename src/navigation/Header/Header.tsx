@@ -5,19 +5,19 @@ import { images } from '../../assets/assets';
 import typography from '../../assets/typography';
 import Colors from '../../assets/colors';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../AppNavigation';
+import { RootStackParamList } from '../../../type';
 
-const Header = () => { 
+const Header = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
-      <View style={styles.containerView}>
-        <TouchableOpacity>
-          <Text style={[typography.Header2,styles.titleText]}>ShopAl</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Search")}>
-          <Image source={images.searchIcon} style={styles.image}></Image>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.containerView}>
+      <TouchableOpacity>
+        <Image source={images.headerLogo} style={{resizeMode:'cover',height:44,width:160}} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+        <Image source={images.searchIcon} style={styles.image}></Image>
+      </TouchableOpacity>
+    </View>
   )
 }
 const styles = StyleSheet.create({
@@ -43,13 +43,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     tintColor: Colors.orange,
   },
-  titleText: {
-    fontWeight: 'semibold', // Dengeli bir görünüm sağlamak için ne çok kalın ne çok ince.
-    color: Colors.black, // Siyah ile güçlü ve net bir vurgu.
-    letterSpacing: 6, // Özgünlük katmak için biraz daha geniş harf aralığı.
-  },
-
-
 });
 
 

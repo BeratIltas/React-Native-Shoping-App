@@ -21,6 +21,7 @@ export type RootStackParamList = {
     AddAddressPage:undefined;
     NotificationsScreen:undefined;
     ReviewsScreen:undefined;
+    OrdersScreen:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
