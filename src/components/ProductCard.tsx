@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import LottieView from 'lottie-react-native';
 import typography from '../assets/typography';
@@ -6,52 +6,61 @@ import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from './Cart/CartContext';
 import { images } from '../assets/assets';
+import { ProductProps } from '../../type';
+import { useWishlist } from '../components/Wishlist/WishlistContext';
 
 const { height, width } = Dimensions.get('window');
 
 type ProductCardProps = {
-  item: {
-    _id: string;
-    image: string;
-    title: string;
-    price: number;
-  };
-  onHeartPress: (productId: string) => void;
-  isLiked: boolean;
+  item: ProductProps & { _id: string };
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const navigation: any = useNavigation();
-  const lottieRef = useRef<LottieView | null>(null); // Ref for "Heart" animation
-  const addToCardRef = useRef<LottieView | null>(null); // Ref for "AddToCard" animation
+  const lottieRef = useRef<LottieView | null>(null);
+  const addToCardRef = useRef<LottieView | null>(null);
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  const liked = isInWishlist(item.product_id);
+
+  useEffect(() => {
+    // Kalp animasyonunu ürün wishlist'teyse baştan dolu göster
+    if (liked) {
+      lottieRef.current?.play(66, 66); // Liked frame'e atla
+    } else {
+      lottieRef.current?.play(0, 0); // Başlangıç frame'i (boş kalp)
+    }
+  }, [liked]);
+
+  const handleHeartPress = async () => {
+    if (liked) {
+      await removeFromWishlist(item.product_id);
+      lottieRef.current?.play(66, 0); // Unlike animasyonu
+    } else {
+      await addToWishlist(item.product_id);
+      lottieRef.current?.play(0, 66); // Like animasyonu
+    }
+  };
+
   const handleAddToCart = () => {
     if (addToCardRef.current) {
       addToCardRef.current.play(0, 75);
-      addToCart({ ...item, quantity: 1 })
+      addToCart(item.product_id);
     }
   };
 
   return (
     <View style={styles.productViewContainer}>
       <View style={styles.heartViewContainer}>
-        <TouchableOpacity
-          style={styles.heart}
-          onPress={() => {
-            onHeartPress(String(item._id));
-            if (lottieRef.current) {
-              isLiked ? lottieRef.current.play(0, 1) : lottieRef.current.play();
-            }
-          }}
-        >
+        <TouchableOpacity style={styles.heart} onPress={handleHeartPress}>
           <LottieView
             ref={lottieRef}
             source={require('../assets/Animations/Heart.json')}
             autoPlay={false}
             loop={false}
             style={styles.heart}
-            speed={5}
-
+            speed={2}
           />
         </TouchableOpacity>
       </View>
@@ -60,22 +69,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
         style={styles.productView}
         onPress={() =>
           navigation.navigate('ProductDetails', {
-            _id: item._id,
+            product_id: item.product_id,
           })
         }
       >
-        <Image source={{ uri: item.image }} style={styles.img} />
-        <View style={styles.starContainer} >
-          <Image source={images.star} style={{height:20,width:20}} />
-          <Text style={{}} >4.2</Text>
+        <Image
+          source={{ uri: item.product_images?.contentUrl?.[0] }}
+          style={styles.img}
+        />
+        <View style={styles.starContainer}>
+          <Image source={images.star} style={{ height: 20, width: 20 }} />
+          <Text>{item.average_rating?.toFixed(1) ?? "0.0"} </Text>
         </View>
         <View style={styles.productDetail}>
           <View style={styles.productDetailText}>
-            <Text
-              style={typography.Body1}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
+            <Text style={typography.Body1} numberOfLines={1} ellipsizeMode="tail">
               {item.title}
             </Text>
             <Text style={typography.Body3Medium}>{item.price} $</Text>
@@ -84,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
           <TouchableOpacity onPress={handleAddToCart}>
             <LottieView
               ref={addToCardRef}
-              source={require("../assets/Animations/AddToCard.json")}
+              source={require('../assets/Animations/AddToCard.json')}
               loop={false}
               autoPlay={false}
               style={styles.cardIcon}
@@ -99,12 +107,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
 const styles = StyleSheet.create({
   productViewContainer: {
     height: height * 0.3,
-    width: width * 0.40,//46 tam
+    width: width * 0.4,
     flex: 1,
-    backgroundColor: Colors.whiteGray
+    backgroundColor: Colors.whiteGray,
   },
   heartViewContainer: {
-    borderRadius: 50
+    borderRadius: 50,
   },
   productView: {
     flex: 1,
@@ -121,11 +129,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  starContainer:{
-    flex:0.7,
-    flexDirection:"row",
-    gap:5,
-    paddingHorizontal:10,
+  starContainer: {
+    flex: 0.7,
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 10,
+    alignItems: 'center',
   },
   productDetail: {
     flexDirection: 'row',

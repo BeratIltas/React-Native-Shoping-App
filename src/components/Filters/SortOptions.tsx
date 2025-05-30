@@ -9,10 +9,11 @@ interface SortOptionsProps {
 }
 
 const SortOptions: React.FC<SortOptionsProps> = ({ selectedOption, onSelect }) => {
+    
     const options = [
-        { key: "mostPopular", label: "Most Popular" },
-        { key: "priceHighToLow", label: "Price: High - Low" },
-        { key: "priceLowToHigh", label: "Price: Low - High" },
+        { key: "most_reviewed", label: "Most Popular" },
+        { key: "highest_price", label: "Price: High - Low" },
+        { key: "lowest_price", label: "Price: Low - High" },
     ];
 
     return (

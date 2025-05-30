@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity, ToastAndroid, Platform } from 'react-native'; // ToastAndroid ve Platform eklendi
 import CommonHeader from '../navigation/Header/CommonHeader';
-import { ProductProps, RootStackParamList } from '../../type';
+import { ProductDetailProps, ProductProps, RootStackParamList } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
@@ -16,8 +16,8 @@ import ExpandableSection from '../components/ExpandableSection';
 const { width, height } = Dimensions.get('window');
 
 const ProductDetails = ({ route }: any) => {
-  const _id = route?.params?._id;
-  const [productData, setProductsData] = useState<ProductProps | null>(null);
+  const _id = route?.params?.product_id;
+  const [productData, setProductsData] = useState<ProductDetailProps | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [productsArray, setProductsArray] = useState([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
@@ -28,46 +28,45 @@ const ProductDetails = ({ route }: any) => {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`https://jsonserver.reactbd.com/amazonpro/${_id}`);
+      const response = await fetch(`https://shopal.expozy.co/product-info/${_id}`, {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const json = await response.json();
-      setProductsData(json);
-      setIsLoading(false);
+
+      setProductsData({
+        product_id: json.product_id,
+        title: json.title,
+        price: json.price,
+        categories: json.categories,
+        merchant_name: json.merchant_name,
+        average_rating: json.average_rating,
+        rating_count: json.rating_count,
+        product_images: json.product_images,
+      });
     } catch (error) {
       console.error('Error fetching product details:', error);
+    } finally {
       setIsLoading(false);
     }
   };
-
-  const fetchRelatedProducts = async () => {
-    try {
-      const response = await fetch('https://jsonserver.reactbd.com/amazonpro');
-      const json = await response.json();
-      setProductsArray(json);
-    } catch (error) {
-      console.error('Error fetching related products:', error);
-    }
-  };
-
   useEffect(() => {
     getData();
-    fetchRelatedProducts();
   }, [_id]);
-
-  const handleHeartPress = (productId: string) => {
-    setLikedProducts((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
 
   const handleShare = async () => {
     if (!productData) return;
-
     try {
       const shareOptions = {
         title: 'Product Details',
         message: `Check out this product: ${productData.title} for $${productData.price}`,
-        url: productData.image,
+        url: productData.product_images?.[0],
       };
       await Share.open(shareOptions);
     } catch (error) {
@@ -79,7 +78,7 @@ const ProductDetails = ({ route }: any) => {
     <View style={styles.container}>
       <CommonHeader
         page="goBack"
-        title={productData?.title || "Details"}
+        title={"Details"}
         icon={images.shareIcon}
         onPress={handleShare}
       />
@@ -90,44 +89,58 @@ const ProductDetails = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.imgView}>
-              {productData?.image && (
-                <Image source={{ uri: productData?.image }} style={styles.img} />
-              )}
-            </View>
+              <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                style={{ width: width, height: height / 2 }}
+              >
+                {productData?.product_images?.map((imgUrl: string, index: number) => (
+                  <Image
+                    key={index}
+                    source={{ uri: imgUrl }}
+                    style={styles.img}
+                  />
+                ))}
+              </ScrollView>
 
+            </View>
             <View style={styles.detailsContainer}>
               <View style={styles.rowBetween}>
-                <Text style={styles.title}>{productData?.title}</Text>
+                <Text style={styles.title}>
+                  {productData?.merchant_name
+                    ? productData.merchant_name.charAt(0).toUpperCase() + productData.merchant_name.slice(1)
+                    : ""}
+                </Text>
                 <Text style={styles.price}>${productData?.price}</Text>
               </View>
-              <TouchableOpacity onPress={() => navigation.navigate('ReviewsScreen')} style={styles.starRow}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ReviewsScreen', { productId: productData?.product_id })}
+                style={styles.starRow}
+              >
                 <Image style={{ height: 22, width: 22 }} source={images.star} />
                 <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Text style={[{ fontWeight: "bold", textDecorationLine: 'underline' }, typography.Body1Medium]}>4.0/5</Text>
-                  <Text style={[{}, typography.Body1Medium]}>(45 reviews)</Text>
+                  <Text style={[{ fontWeight: "bold", textDecorationLine: 'underline' }, typography.Body1Medium]}>{productData?.average_rating}/5</Text>
+                  <Text style={[{}, typography.Body1Medium]}>  ({productData?.rating_count})</Text>
                 </View>
               </TouchableOpacity>
-              <Text style={styles.description}>{productData?.description}</Text>
+              <Text style={styles.description} >{productData?.title}</Text>
             </View>
             <View style={styles.divider} />
             <ExpandableSection title="Shipping Info">
-              <Text style={{ fontSize: 15, lineHeight: 22,paddingBottom:10, color: "#555" }}>
+              <Text style={{ fontSize: 15, lineHeight: 22, paddingBottom: 10, color: "#555" }}>
                 Your order will be shipped within 3-5 business days. Tracking
                 information will be provided once dispatched.
               </Text>
             </ExpandableSection>
             <View style={styles.divider} />
             <ExpandableSection title="Return Policy">
-              <Text style={{ fontSize: 15, lineHeight: 22,paddingBottom:10, color: "#555" }}>
+              <Text style={{ fontSize: 15, lineHeight: 22, paddingBottom: 10, color: "#555" }}>
                 The return process is valid within 14 days after the product is received.
               </Text>
             </ExpandableSection>
             <View style={styles.divider} />
-            <AdviceProduct
-              products={productsArray}
-              onHeartPress={handleHeartPress}
-              likedProducts={likedProducts}
-            />
+            <AdviceProduct productIds={productData?.product_id} />
 
           </ScrollView>
 
@@ -135,8 +148,8 @@ const ProductDetails = ({ route }: any) => {
             <TouchableOpacity
               style={styles.addToCartButton}
               onPress={() => {
-                if (productData?._id) {
-                  addToCart({ ...productData, quantity: 1 });
+                if (productData?.product_id) {
+                  addToCart(productData.product_id);
 
                   if (Platform.OS === 'android') {
                     ToastAndroid.show('Sepete eklendi', ToastAndroid.SHORT);
@@ -180,12 +193,12 @@ const styles = StyleSheet.create({
   imgView: {
     width: width,
     height: height / 2,
-    backgroundColor: Colors.ultraLightGray,
+    backgroundColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },
   img: {
-    width: '100%',
+    width: width,
     height: '100%',
     resizeMode: 'contain',
   },

@@ -20,6 +20,7 @@ import { AddressProvider } from './src/components/Account/Address/AddressContext
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 import { Notifications } from './src/navigation/Notifications';
+import { WishlistProvider } from './src/components/Wishlist/WishlistContext';
 
 
 
@@ -37,15 +38,17 @@ const RootContent = () => {
   return (
     <AuthProvider>
       <CartProvider>
-        <PaymentCardProvider>
-          <AddressProvider>
-            <GestureHandlerRootView>
-              <NavigationContainer>
-                <AppNavigator />
-              </NavigationContainer>
-            </GestureHandlerRootView>
-          </AddressProvider>
-        </PaymentCardProvider>
+        <WishlistProvider>
+          <PaymentCardProvider>
+            <AddressProvider>
+              <GestureHandlerRootView>
+                <NavigationContainer>
+                  <AppNavigator />
+                </NavigationContainer>
+              </GestureHandlerRootView>
+            </AddressProvider>
+          </PaymentCardProvider>
+        </WishlistProvider>
       </CartProvider>
     </AuthProvider>
 

@@ -1,34 +1,41 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, Dimensions, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Dimensions, StyleSheet, Image, FlatList } from 'react-native';
 import Header from '../navigation/Header/Header';
 import Carousel from 'react-native-reanimated-carousel';
 import { images } from '../assets/assets';
 import Colors from '../assets/colors';
-import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import CategoryRow from '../components/CategoryRow';
 import AdviceProduct from '../components/AdviceProduct';
 import PromotionCard from '../components/PromotionCard';
+import Loader from '../components/Loader';
 
 const { width } = Dimensions.get('window');
+interface Product {
+  product_id: string;
+  product_images?: { contentUrl?: string[] };
+  merchant_name: string;
+  categories: string;
+}
 
 const HomePage = () => {
-  const [productsArray, setProductsArray] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+const [productsArray, setProductsArray] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
 
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('https://jsonserver.reactbd.com/amazonpro');
+      const queryParams = new URLSearchParams({
+        sort_by: 'highest_price',
+        min_ratings: '3',        
+      }).toString();
+
+      const response = await fetch(`https://shopal.expozy.co/filter-product?${queryParams}`);
       const json = await response.json();
-      setProductsArray(json);
-      await AsyncStorage.setItem('productData', JSON.stringify(json));
-      setIsLoading(false);
+      console.log(productsArray)
+      setProductsArray(json.products?.slice(10, 20) || []);
     } catch (error) {
       console.log('Error fetching data:', error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -39,84 +46,53 @@ const HomePage = () => {
 
   const bannerImages = [images.bannerOne, images.bannerTwo, images.bannerThree];
 
-  const handleHeartPress = (productId: string) => {
-    setLikedProducts((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  const renderItem = ({ item }: { item: any }) => (
-    <ProductCard
-      item={item}
-      onHeartPress={handleHeartPress}
-      isLiked={!!likedProducts[item._id]}
-    />
+  const ListHeader = () => (
+    <>
+      <Carousel
+        loop
+        width={width}
+        style={{ height: 150 }}
+        autoPlay={true}
+        data={bannerImages}
+        scrollAnimationDuration={2500}
+        renderItem={({ item }) => (
+          <View key={String(item)}>
+            <Image
+              source={item}
+              style={{ width: '100%', height: 150, resizeMode: 'contain' }}
+            />
+          </View>
+        )}
+      />
+      <CategoryRow />
+      <AdviceProduct productIds={['39049410', '32660527', '329980272']} />
+    </>
   );
 
   return (
     <View style={styles.container}>
       <Header />
-      <View>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <FlatList
-            data={productsArray}
-            removeClippedSubviews={false}
-            contentContainerStyle={styles.container}
-            keyExtractor={(item: any) => String(item?._id)}
-            renderItem={renderItem}
-            refreshing={refreshing}
-            onRefresh={() => {
-              getData();
+      <FlatList
+        data={productsArray}
+        keyExtractor={(item) => item.product_id.toString()}
+        renderItem={({ item }) => (
+          <PromotionCard
+            item={{
+              _id: item.product_id,
+              image: item.product_images?.contentUrl?.[0],
+              brand: item.merchant_name,
+              category: item.categories,
             }}
-            numColumns={2}
-            ListHeaderComponent={
-              <View>
-                <Carousel
-                  loop
-                  width={width}
-                  style={{ height: 150 }}
-                  autoPlay={true}
-                  data={bannerImages}
-                  scrollAnimationDuration={2500}
-                  renderItem={({ item }) => {
-                    return (
-                      <View key={String(item)}>
-                        <Image
-                          source={item}
-                          style={{ width: '100%', height: 150, resizeMode: 'contain' }}
-                        />
-                      </View>
-                    );
-                  }}
-                />
-                <CategoryRow />
-                <AdviceProduct
-                  products={productsArray}
-                  onHeartPress={handleHeartPress}
-                  likedProducts={likedProducts} />
-                {productsArray
-                  .sort(() => Math.random() - 0.5)
-                  .slice(0, 50)
-                  .map((item: any) => (
-                    <PromotionCard
-                      key={item._id}
-                      item={{
-                        _id: item._id,
-                        image: item.image,
-                        brand: item.brand,
-                        category:item.category,
-                      }}
-                    />
-                  ))}
-              </View>
-
-            }
           />
         )}
-      </View>
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -124,7 +100,7 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.whiteGray,
-    paddingBottom: 100,
+    flex: 1,
   },
 });
 

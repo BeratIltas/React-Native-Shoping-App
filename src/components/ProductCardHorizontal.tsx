@@ -5,30 +5,24 @@ import typography from '../assets/typography';
 import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from './Cart/CartContext';
+import { ProductProps } from '../../type';
 
 const { height, width } = Dimensions.get('window');
 
 type ProductCardProps = {
-  item: {
-    _id: string;
-    image: string;
-    title: string;
-    price: number;
-  };
-  onHeartPress: (productId: string) => void;
-  isLiked: boolean;
+  item: ProductProps & { _id: string };
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const navigation: any = useNavigation();
-  const lottieRef = useRef<LottieView | null>(null); // Ref for "Heart" animation
-  const addToCardRef = useRef<LottieView | null>(null); // Ref for "AddToCard" animation
+  const lottieRef = useRef<LottieView | null>(null);
+  const addToCardRef = useRef<LottieView | null>(null);
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
     if (addToCardRef.current) {
       addToCardRef.current.play(0, 75);
-      addToCart({ ...item, quantity: 1 }) 
+      addToCart(item.product_id);
     }
   };
 
@@ -42,7 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item, onHeartPress, isLiked }
           })
         }
       >
-        <Image source={{ uri: item.image }} style={styles.img} />
+        <Image source={{ uri: item.product_images.contentUrl[0] }} style={styles.img} />
         <View style={styles.productDetail}>
           <View style={styles.productDetailText}>
             <Text
@@ -74,7 +68,7 @@ const styles = StyleSheet.create({
   productViewContainer: {
     height: height * 0.2,
     flex: 1,
-    backgroundColor: Colors.whiteGray,    
+    backgroundColor: Colors.whiteGray,
   },
   productView: {
     flex: 1,
@@ -85,13 +79,15 @@ const styles = StyleSheet.create({
     borderColor: Colors.black,
     backgroundColor: Colors.white,
     overflow: 'hidden',
-    flexDirection:"row"
+    flexDirection: "row"
 
   },
   img: {
     backgroundColor: Colors.white,
     flex: 1,
     resizeMode: 'contain',
+    marginBottom: 0.5,
+
   },
 
   productDetail: {

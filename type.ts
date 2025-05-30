@@ -20,8 +20,9 @@ export type RootStackParamList = {
     PaymentMethods:undefined;
     AddAddressPage:undefined;
     NotificationsScreen:undefined;
-    ReviewsScreen:undefined;
+    ReviewsScreen:{ productId?: number };
     OrdersScreen:undefined;
+    OrderDetailsScreen:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
@@ -37,18 +38,30 @@ export  type ProfileProps = {
     onLogout: () => void;
   };  
 export interface ProductProps {
-    brand: string;
-    category: string;
-    description: string;
-    image: string;
-    isNew: boolean;
-    previousPrice: number;
-    price: number;
-    quentity: number;
-    title: string;
-    _id: string;
-    quantity: number;
+  product_id: number;
+  title: string;
+  price: number;
+  categories: string[];
+  merchant_name: string;
+  average_rating: number;
+  rating_count: number;
+  product_images: {
+    type: string;
+    contentUrl: string[];
+    embeddedTextCaption: string[];
+  };
+  quantity?: number;
 }
+export interface ProductDetailProps {
+  product_id: number;
+  title: string;
+  price: number;
+  categories: string[];
+  merchant_name: string;
+  average_rating: number;
+  rating_count: number;
+  product_images: string[];
+};
 
 export interface Item {
     item: ProductProps,

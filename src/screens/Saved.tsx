@@ -1,46 +1,19 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import CommonHeader from '../navigation/Header/CommonHeader';
 import Colors from '../assets/colors';
 import ProductCardHorizontal from '../components/ProductCardHorizontal';
-import { useAuth } from '../components/Account/AuthContext';
-import { images } from '../assets/assets';
+import { useWishlist } from '../components/Wishlist/WishlistContext';
 
 const Saved = () => {
-  const [productsArray, setProductsArray] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
-  const { user } = useAuth();
+  const { wishlistItems, removeFromWishlist, isInWishlist } = useWishlist();
 
-  const getData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('https://jsonserver.reactbd.com/amazonpro');
-      const json = await response.json();
-      setProductsArray(json);
-      setIsLoading(false);
-    } catch (error) {
-      console.log('Error fetching data:', error);
-      setIsLoading(false);
-    }
+  const handleUnliked = async (productId: number) => {
+    await removeFromWishlist(productId);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const handleUnliked = async (userId: any, productId: string) => {
-    console.log(`Unliked UserID: ${userId}, ProductID: ${productId}`);
-    setLikedProducts((prev) => {
-      const updatedLiked = { ...prev };
-      delete updatedLiked[productId];
-      return updatedLiked;
-    });
-  };
-
-  const renderRightActions = (item: any) => (
+  const renderRightActions = () => (
     <View style={styles.deleteContainer}>
       <Text style={styles.deleteText}>Remove</Text>
     </View>
@@ -49,14 +22,13 @@ const Saved = () => {
   const renderItem = ({ item }: { item: any }) => {
     return (
       <Swipeable
-        renderRightActions={() => renderRightActions(item)}
-        onSwipeableOpen={() => handleUnliked(user?.uid, item._id)}
-        containerStyle={{ borderWidth: 0 }}
+        renderRightActions={renderRightActions}
+        onSwipeableOpen={() => handleUnliked(item.product_id)}
       >
         <ProductCardHorizontal
           item={item}
-          onHeartPress={() => setLikedProducts((prev) => ({ ...prev, [item._id]: !prev[item._id] }))}
-          isLiked={!!likedProducts[item._id]}
+          onHeartPress={() => handleUnliked(item.product_id)}
+          isLiked={isInWishlist(item.product_id)}
         />
       </Swipeable>
     );
@@ -64,16 +36,21 @@ const Saved = () => {
 
   return (
     <View>
-      <CommonHeader page="Saved" title="Saved" iconleft={null} icon={null} onPress={undefined}/>
+      <CommonHeader page="Saved" title="Saved" iconleft={null} icon={null} onPress={undefined} />
       <FlatList
-        data={productsArray}
+        data={wishlistItems}
         contentContainerStyle={styles.container}
-        keyExtractor={(item: any) => String(item?._id)}
+        keyExtractor={(item: any) => String(item.product_id)}
         renderItem={renderItem}
-        refreshing={refreshing}
-        onRefresh={() => getData()}
+        refreshing={false}
+        onRefresh={() => {}}
         numColumns={1}
         ItemSeparatorComponent={() => null}
+        ListEmptyComponent={
+          <View style={{ alignItems: 'center', marginTop: 50 }}>
+            <Text style={{ color: Colors.black, fontSize: 16 }}>No saved items.</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -88,9 +65,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff3b30',
     justifyContent: 'center',
     alignItems: 'center',
-    width: "40%",
-    borderRadius:10,
-    margin:5
+    width: '40%',
+    borderRadius: 10,
+    margin: 5,
   },
   deleteText: {
     color: 'white',

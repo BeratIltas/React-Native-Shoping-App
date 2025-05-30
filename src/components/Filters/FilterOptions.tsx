@@ -9,6 +9,7 @@ interface FilterOptionsProps {
     onSort: (type: string) => void;
     onPriceChange: (price: number[]) => void;
     priceRange: number[];
+    setModalVisible: (visible: boolean) => void;
 }
 
 const FilterOptions: React.FC<FilterOptionsProps> = ({
@@ -17,7 +18,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
     priceRange,
 }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedOption, setSelectedOption] = useState<string>("mostPopular");
+    const [selectedOption, setSelectedOption] = useState<string>("most_reviewed");
 
     const toggleModal = () => {
         setModalVisible(!modalVisible);
@@ -37,10 +38,10 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
                 <ModalContent
                     toggleModal={toggleModal}
                     onSort={onSort}
-                    onPriceChange={onPriceChange} 
+                    onPriceChange={onPriceChange}
                     selectedOption={selectedOption}
                     setSelectedOption={setSelectedOption}
-                    priceRange={priceRange} 
+                    priceRange={priceRange}
                 />
             )}
         </View>
@@ -49,7 +50,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center",        
+        alignItems: "center",
         backgroundColor: Colors.white,
         borderBottomColor: Colors.lightGray,
         borderBottomWidth: 0.2,
@@ -58,16 +59,16 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         paddingRight: 30,
     },
-    searchBar:{
-        flex:8,
-        paddingTop:3,
-        paddingBottom:15,
+    searchBar: {
+        flex: 8,
+        paddingTop: 3,
+        paddingBottom: 15,
         alignItems: "center",
         alignContent: "center",
         textAlign: "center",
     },
     itemContainer: {
-        flex:1,
+        flex: 1,
         padding: 10,
         backgroundColor: Colors.black,
         borderWidth: 1,

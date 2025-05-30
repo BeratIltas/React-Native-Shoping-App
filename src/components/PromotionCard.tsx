@@ -43,14 +43,30 @@ const getRandomGradient = () => {
 const PromotionCard: React.FC<Props> = ({ item }) => {
   const navigation: any = useNavigation();
   const randomColors = useMemo(() => getRandomGradient(), []);
+
+
+const parseCategories = (categoriesStr: string | undefined): string[] => {
+  if (!categoriesStr) return [];
+  try {
+    const fixedStr = categoriesStr.replace(/'/g, '"').trim();
+    return JSON.parse(fixedStr);
+  } catch (error) {
+    console.warn("Kategori parse hatası:", error);
+    return [];
+  }
+};
+
+
   return (
     <TouchableOpacity
       activeOpacity={1}
-      onPress={() => (
-        navigation.navigate('ProductDetails', {
-          _id: item._id,
-        }))
-      }>
+      onPress={() => {
+        const categoriesArray = parseCategories(item.category);
+        navigation.navigate('ProductsPage', {
+          category: categoriesArray[2],
+        });
+      }}
+    >
       <LinearGradient
         colors={randomColors}
         start={{ x: 0, y: 0 }}
@@ -80,7 +96,7 @@ const PromotionCard: React.FC<Props> = ({ item }) => {
         </View>
 
         <View style={styles.dateTag}>
-          <Text style={[styles.dateText,typography.Body3Medium]}>May 29 - June 1</Text>
+          <Text style={[styles.dateText, typography.Body3Medium]}>May 29 - June 1</Text>
         </View>
       </LinearGradient>
     </TouchableOpacity>

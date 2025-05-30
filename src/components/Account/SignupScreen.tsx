@@ -14,6 +14,7 @@ import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
 import LinearGradient from 'react-native-linear-gradient';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
@@ -32,19 +33,50 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const displayNameRef = useRef<TextInput>(null);
-  const handleSignup = async () => {
+  const { user } = useAuth();
 
+
+  const handleSignup = async () => {
     const newTouched = {
       email: email.trim() === '',
       password: password.trim() === '',
       displayName: displayName.trim() === '',
     };
     setTouched(newTouched);
+
+    if (newTouched.email || newTouched.password || newTouched.displayName) {
+      setErrorMsg('Please fill in all fields.');
+      return;
+    }
+
     try {
       await signup(email, password, displayName);
+
+      if (!user) {
+        throw new Error('User not found after signup');
+      }
+
+      try {
+        const response = await axios.post('https://shopal.expozy.co/new-users', {
+          id: user.uid,
+          email_address: user.email,
+          phone_number: '55555555',
+          password: "sssss",
+        });
+
+        console.log('API success:', response.data);
+        Alert.alert('Success!', 'User registered successfully to backend.');
+      } catch (error: any) {
+        console.error('API error:', error.response?.data || error.message);
+        Alert.alert('Error', 'Backend registration failed.');
+      }
+
+
       Alert.alert('Success!', 'Registration completed successfully!');
     } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
+      if (error.response?.status === 422) {
+        setErrorMsg('Backend validation error occurred.');
+      } else if (error.code === 'auth/email-already-in-use') {
         setTouched(prev => ({ ...prev, email: true }));
         setErrorMsg('This email is already in use.');
       } else if (error.code === 'auth/invalid-email') {
@@ -58,6 +90,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
       }
     }
   };
+
 
 
   return (

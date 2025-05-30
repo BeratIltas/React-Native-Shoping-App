@@ -77,8 +77,6 @@ const SearchScreen = () => {
   const renderItem = ({ item }: { item: any }) => (
     <ProductCard
       item={item}
-      onHeartPress={handleHeartPress}
-      isLiked={!!likedProducts[item._id]}
     />
   );
 

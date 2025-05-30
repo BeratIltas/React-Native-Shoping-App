@@ -9,24 +9,26 @@ import AdviceProduct from '../components/AdviceProduct';
 import { images } from '../assets/assets';
 
 const Cart = () => {
-  const { cartItems, totalPrice,clearCart } = useCart();
+  const { cartItems, totalPrice, clearCart } = useCart();
 
   return (
     <View style={styles.container}>
-      <CommonHeader title="Cart"  icon={totalPrice!==0?(images.trash):(null)} onPress={totalPrice!==0? clearCart:undefined} iconleft={null} page="MainApp" />
+      <CommonHeader title="Cart" icon={totalPrice !== 0 ? (images.trash) : (null)} onPress={totalPrice !== 0 ? clearCart : undefined} iconleft={null} page="MainApp" />
       {cartItems.length === 0 ? (
         <EmptyCart />
       ) : (
         <FlatList
           data={cartItems}
           renderItem={({ item }) => <ProductCardHorizontalCart item={item} />}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.product_id.toString()}
           contentContainerStyle={{ paddingBottom: 120 }}
         />
-        
+
+
+
       )}
       <View style={styles.totalCartContainer}>
-        <TotalCart/>
+        <TotalCart />
       </View>
     </View>
   );

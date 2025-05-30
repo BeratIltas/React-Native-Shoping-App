@@ -19,27 +19,27 @@ const CategoryRow = () => {
         <View style={styles.container}>
             <Text style={[typography.Header4, styles.categoryHeader]}>Category</Text>
             <View style={styles.category}>
-                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('phone')}>
-                    <View style={[styles.img, { backgroundColor: '#EDF7FF' }]}>
-                        <Image source={images.apparelIcon} />
+                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('Erkek')}>
+                    <View style={[styles.img, { backgroundColor: '#B0D4FF' }]}>
+                        <Image source={images.man} />
                     </View>
-                    <Text style={[typography.Body3Medium, styles.text]}>Apparel</Text>
+                    <Text style={[typography.Body3Medium, styles.text]}>Man</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('Electronic')}>
-                    <View style={[styles.img, { backgroundColor: '#E9FFF8' }]}>
-                        <Image source={images.electronicIcon} />
+                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('Kadın')}>
+                    <View style={[styles.img, { backgroundColor: '#FFC9C5' }]}>
+                        <Image source={images.woman} />
                     </View>
-                    <Text style={[typography.Body3Medium, styles.text]}>Electronic</Text>
+                    <Text style={[typography.Body3Medium, styles.text]}>Women</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('Furniture')}>
-                    <View style={[styles.img, { backgroundColor: '#FFEEED' }]}>
+                <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress('Ev')}>
+                    <View style={[styles.img, { backgroundColor: '#FFD7A5' }]}>
                         <Image source={images.furnitureIcon} />
                     </View>
-                    <Text style={[typography.Body3Medium, styles.text]}>Furniture</Text>
+                    <Text style={[typography.Body3Medium, styles.text]}>Home</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress()}>
-                    <View style={[styles.img, { backgroundColor: '#FFEDDD' }]}>
-                        <Image source={images.allIcon} />
+                    <View style={[styles.img, { backgroundColor: '#FFE5D4' }]}>
+                        <Image source={images.allIcon} style={{tintColor:Colors.orange}}/>
                     </View>
                     <Text style={[typography.Body3Medium, styles.text]}>All</Text>
                 </TouchableOpacity>

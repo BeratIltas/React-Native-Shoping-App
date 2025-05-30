@@ -6,42 +6,46 @@ import Colors from '../../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { images } from '../../assets/assets';
 import { useCart } from './CartContext';
+import { ProductProps } from '../../../type';
 
 const { height } = Dimensions.get('window');
 
 type Props = {
-  item: {
-    _id: string;
-    image: string;
-    title: string;
-    price: number;
-    quantity: number;
-  };
+  item: ProductProps;
 };
 
 const ProductCardHorizontalCart: React.FC<Props> = ({ item }) => {
   const navigation: any = useNavigation();
   const lottieRef = useRef<LottieView | null>(null);
-  const { removeFromCart, updateQuantity } = useCart(); 
-  const [quantity, setQuantity] = useState(item.quantity); 
+  const { removeFromCart, updateQuantity } = useCart();
+  const [quantity, setQuantity] = useState(item.quantity);
 
   const playTrashAnimation = () => {
     lottieRef.current?.play();
-    removeFromCart(item._id);
+    removeFromCart(item.product_id);
   };
 
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity);
-    updateQuantity(item._id, newQuantity);
+    updateQuantity(item.product_id, newQuantity);
   };
+
+  // Görsel URL'si
+  const imageUrl = item.product_images?.contentUrl?.[0] ?? '';
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.innerContainer}
-        onPress={() => navigation.navigate('ProductDetails', { _id: item._id })}
+        onPress={() => navigation.navigate('ProductDetails', { product_id: item.product_id })}
       >
-        <Image source={{ uri: item.image }} style={styles.image} />
+        {imageUrl ? (
+          <Image source={{ uri: imageUrl }} style={styles.image} />
+        ) : (
+          <View style={[styles.image, { justifyContent: 'center', alignItems: 'center' }]}>
+            <Text>No Image</Text>
+          </View>
+        )}
         <View style={styles.details}>
           <View style={styles.upper}>
             <View style={styles.titleContainer}>
@@ -62,19 +66,19 @@ const ProductCardHorizontalCart: React.FC<Props> = ({ item }) => {
           </View>
           <View style={styles.bottom}>
             <Text style={[typography.Body3Medium, styles.price]}>
-              {item.price * quantity} $
+              {(item.price * (quantity ?? 1)).toFixed(2)} $
             </Text>
             <View style={styles.quantityWrapper}>
               <TouchableOpacity
                 style={styles.quantityBtn}
-                onPress={() => handleQuantityChange(Math.max(quantity - 1, 1))}
+                onPress={() => handleQuantityChange(Math.max((quantity ?? 1) - 1, 1))}
               >
                 <Image source={images.minus} />
               </TouchableOpacity>
               <Text>{quantity}</Text>
               <TouchableOpacity
                 style={styles.quantityBtn}
-                onPress={() => handleQuantityChange(quantity + 1)}
+                onPress={() => handleQuantityChange((quantity ?? 1) + 1)}
               >
                 <Image source={images.plus} />
               </TouchableOpacity>
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: 'contain',
+    marginBottom: 0.5,
   },
   details: {
     flex: 1.5,
