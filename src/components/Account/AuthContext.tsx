@@ -7,7 +7,7 @@ interface AuthContextProps {
   user: FirebaseAuthTypes.User | null;
   profilePhoto: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, displayName: string) => Promise<void>;
+  signup: (email: string, password: string, displayName: string) => Promise<FirebaseAuthTypes.User | null>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateProfile: (displayName: string, photoBase64OrUri: string | null) => Promise<void>;
@@ -62,12 +62,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       await userCredential.user.updateProfile({ displayName });
       await userCredential.user.reload();
-      setUser(auth.currentUser);
+      const currentUser = auth.currentUser;
+      setUser(currentUser);
+      return currentUser; // 🔁 return eklenmeli
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
     }
   };
+
 
   const logout = async () => {
     try {

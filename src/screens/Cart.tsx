@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { useCart } from '../components/Cart/CartContext';
-import ProductCardHorizontalCart from '../components/Cart/ProductCardHorizontalCart';
+import ProductCardHorizontalCart from '../components/ProductCardHorizontalCart';
 import EmptyCart from '../components/Cart/EmptyCart';
 import TotalCart from '../components/Cart/TotalCart';
 import CommonHeader from '../navigation/Header/CommonHeader';

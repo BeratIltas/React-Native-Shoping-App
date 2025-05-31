@@ -39,10 +39,11 @@ const CategoryRow = () => {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.categoryContainer} onPress={() => handleCategoryPress()}>
                     <View style={[styles.img, { backgroundColor: '#FFE5D4' }]}>
-                        <Image source={images.allIcon} style={{tintColor:Colors.orange}}/>
+                        <Image source={images.allIcon} style={{ tintColor: Colors.orange }} />
                     </View>
                     <Text style={[typography.Body3Medium, styles.text]}>All</Text>
                 </TouchableOpacity>
+
             </View>
         </View>
     )

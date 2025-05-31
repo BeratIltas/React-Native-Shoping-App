@@ -1,12 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
-import { ProductProps } from '../../../type';
-
+export type ProductProps = {
+  id: number;
+  name: string;
+  price: number;
+  product_image: string[];
+};
 type WishlistContextType = {
   wishlistItems: ProductProps[];
-  addToWishlist: (product_item_id: number) => Promise<void>;
-  removeFromWishlist: (item_id: number) => Promise<void>;
-  isInWishlist: (item_id: number) => boolean;
+  addToWishlist: (product_id: number) => Promise<void>;
+  removeFromWishlist: (product_id: number) => Promise<void>;
+  isInWishlist: (product_id: number) => boolean;
 };
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -34,12 +38,10 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     try {
       const response = await fetch(`${API_BASE_URL}/wishlist?user_id=${userId}`);
-
       if (!response.ok) {
         const text = await response.text();
         throw new Error(`Failed to fetch wishlist: ${response.status} - ${text}`);
       }
-
       const data: ProductProps[] = await response.json();
       setWishlistItems(data);
     } catch (error) {
@@ -52,14 +54,14 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     fetchWishlist();
   }, [userId]);
 
-  const addToWishlist = async (product_item_id: number) => {
+  const addToWishlist = async (product_id: number) => {
     if (!userId) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/wishlist/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, product_item_id }),
+        body: JSON.stringify({ user_id: userId, product_item_id: product_id }),
       });
 
       if (!response.ok) {
@@ -73,11 +75,11 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const removeFromWishlist = async (item_id: number) => {
+  const removeFromWishlist = async (product_id: number) => {
     if (!userId) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/wishlist/remove/${item_id}?user_id=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/wishlist/remove/${product_id}?user_id=${userId}`, {
         method: 'DELETE',
       });
 
@@ -92,25 +94,18 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const isInWishlist = (item_id: number): boolean => {
-    return wishlistItems.some((item) => item.product_id === item_id);
+  const isInWishlist = (product_id: number): boolean => {
+    return wishlistItems.some((item) => item.id === product_id);
   };
 
   return (
-    <WishlistContext.Provider
-      value={{
-        wishlistItems,
-        addToWishlist,
-        removeFromWishlist,
-        isInWishlist,
-      }}
-    >
+    <WishlistContext.Provider value={{ wishlistItems, addToWishlist, removeFromWishlist, isInWishlist }}>
       {children}
     </WishlistContext.Provider>
   );
 };
 
-export const useWishlist = () => {
+export const useWishlist = (): WishlistContextType => {
   const context = useContext(WishlistContext);
   if (!context) throw new Error('useWishlist must be used within a WishlistProvider');
   return context;

@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   uppContainerText: {
-    paddingLeft: 30,
+    paddingLeft: 20,
   },
   username: {
     fontSize: 20,

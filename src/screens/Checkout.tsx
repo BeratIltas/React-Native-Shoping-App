@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CommonHeader from '../navigation/Header/CommonHeader'
 import Colors from '../assets/colors'
@@ -9,6 +9,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../type'
 import { usePaymentCards } from '../components/Account/Payment/PaymentCardContext'
 import { useAddresses } from '../components/Account/Address/AddressContext'
+import axios from 'axios'
+import { useAuth } from '../components/Account/AuthContext'
 
 
 const Checkout = () => {
@@ -19,8 +21,10 @@ const Checkout = () => {
     const total = totalPrice - Number(discount) + Number(shippingFee);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const { defaultCard } = usePaymentCards();
-    const{defaultAddress}= useAddresses();
-
+    const { defaultAddress } = useAddresses();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const { user } = useAuth();
+    const userId = user?.uid;
 
     useEffect(() => {
         const showListener = Keyboard.addListener("keyboardDidShow", () => {
@@ -38,7 +42,23 @@ const Checkout = () => {
     const handleDiscount = (): void => {
         { query === "" ? (setDiscount("0")) : (setDiscount("50")) }
     }
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    const handleBuyCartItems = async (userId: string) => {
+        try {
+            const response = await axios.post(`https://shopal.expozy.co/cart/buy`, null, {
+                params: { user_id: userId },
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            Alert.alert("Success", "Cart items purchased successfully!");
+            console.log("Buy Cart Response:", response.data);
+        } catch (error: any) {
+            console.error("Error buying cart items:", error.response?.data || error.message);
+            Alert.alert("Error", "Failed to complete purchase.");
+        }
+    };
 
     return (
 
@@ -55,22 +75,22 @@ const Checkout = () => {
                         <View style={styles.addressheader} >
                             <Text style={[typography.Body1, styles.title]}>Delivery Address</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("Addresses")}>
-                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultAddress ? ("Change"):("Add")}</Text>
+                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultAddress ? ("Change") : ("Add")}</Text>
                             </TouchableOpacity>
                         </View>
                         {defaultAddress ? (
-                        <View style={styles.addressBody}>
-                            <Image source={images.location} />
-                            <View>
-                                <Text style={[typography.Body2, styles.subTitle]}>{defaultAddress?.name}</Text>
-                                <Text style={[typography.Body2Regular, styles.addressText]} numberOfLines={1} ellipsizeMode="tail">
-                                    {[defaultAddress.street,defaultAddress.country,defaultAddress.city,defaultAddress.zip].join(' ')}
-                                </Text>
+                            <View style={styles.addressBody}>
+                                <Image source={images.location} />
+                                <View>
+                                    <Text style={[typography.Body2, styles.subTitle]}>{defaultAddress?.name}</Text>
+                                    <Text style={[typography.Body2Regular, styles.addressText]} numberOfLines={1} ellipsizeMode="tail">
+                                        {[defaultAddress.street, defaultAddress.country, defaultAddress.city, defaultAddress.zip].join(' ')}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
                         ) : (
                             <View>
-                                <Text style={{textAlign:"center"}}>No saved address</Text>
+                                <Text style={{ textAlign: "center" }}>No saved address</Text>
                             </View>
                         )}
                     </View>
@@ -81,14 +101,14 @@ const Checkout = () => {
                         <View style={styles.addressheader}>
                             <Text style={[typography.Body1, styles.title]}>Payment Method</Text>
                             <TouchableOpacity onPress={() => navigation.navigate("PaymentMethods")}>
-                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultCard ? ("Change"):("Add")}</Text>
+                                <Text style={[typography.Body2Medium, styles.changeText]}>{defaultCard ? ("Change") : ("Add")}</Text>
                             </TouchableOpacity>
                         </View>
                         {defaultCard ? (
                             <View style={styles.paymentBody}>
                                 <View>
                                     {defaultCard?.cardNumber.startsWith("4") ?
-                                        <Image source={images.visa} style={{tintColor:"blue"}}/> : <Image source={images.mastercard} />
+                                        <Image source={images.visa} style={{ tintColor: "blue" }} /> : <Image source={images.mastercard} />
                                     }
                                 </View>
                                 <View>
@@ -97,7 +117,7 @@ const Checkout = () => {
                             </View>
                         ) : (
                             <View>
-                                <Text style={{textAlign:"center"}}>No saved cards</Text>
+                                <Text style={{ textAlign: "center" }}>No saved cards</Text>
                             </View>
                         )}
                     </View>
@@ -157,7 +177,7 @@ const Checkout = () => {
             </TouchableWithoutFeedback>
 
             {!isKeyboardVisible && (
-                <TouchableOpacity style={styles.orderButton}>
+                <TouchableOpacity style={styles.orderButton} onPress={()=>handleBuyCartItems(userId!)}>
                     <Text style={[styles.addText, typography.Body1Medium]}>Place Order</Text>
                 </TouchableOpacity>
             )}

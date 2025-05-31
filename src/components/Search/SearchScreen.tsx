@@ -64,18 +64,9 @@ const SearchScreen = () => {
     )
     : [];
 
-  const handleHeartPress = (productId: string) => {
-    setLikedProducts((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
-
   const renderItem = ({ item }: { item: any }) => (
     <ProductCard
       item={item}
-      onHeartPress={handleHeartPress}
-      isLiked={!!likedProducts[item._id]}
     />
   );
 

@@ -31,7 +31,6 @@ const [productsArray, setProductsArray] = useState<Product[]>([]);
 
       const response = await fetch(`https://shopal.expozy.co/filter-product?${queryParams}`);
       const json = await response.json();
-      console.log(productsArray)
       setProductsArray(json.products?.slice(10, 20) || []);
     } catch (error) {
       console.log('Error fetching data:', error);

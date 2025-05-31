@@ -41,6 +41,7 @@ export const images = {
   headPhones: require('./Account/Headphones.png'),
   phone: require('./Account/Phone.png'),
   send: require('./Account/Send.png'),
+  comment: require('./Account/comment.png'),
   minus: require('./Cart/Minus.png'),
   plus: require('./Cart/Plus.png'),
   cartEmpty: require('./Cart/CartEmpty.png'),

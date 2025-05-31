@@ -22,7 +22,8 @@ export type RootStackParamList = {
     NotificationsScreen:undefined;
     ReviewsScreen:{ productId?: number };
     OrdersScreen:undefined;
-    OrderDetailsScreen:undefined;
+    OrderDetailsScreen:{ orderId?: number};
+    TshirtCustomizer:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
@@ -60,11 +61,12 @@ export interface ProductDetailProps {
   merchant_name: string;
   average_rating: number;
   rating_count: number;
-  product_images: string[];
+  product_image: string[];
 };
 
 export interface Item {
     item: ProductProps,
-}
+};
+
 
 

@@ -1,16 +1,20 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import CommonHeader from '../navigation/Header/CommonHeader';
 import Colors from '../assets/colors';
 import ProductCardHorizontal from '../components/ProductCardHorizontal';
 import { useWishlist } from '../components/Wishlist/WishlistContext';
+import { ProductProps } from '../../type';
+import { images } from '../assets/assets';
+
 
 const Saved = () => {
   const { wishlistItems, removeFromWishlist, isInWishlist } = useWishlist();
 
   const handleUnliked = async (productId: number) => {
     await removeFromWishlist(productId);
+    console.log(productId)
   };
 
   const renderRightActions = () => (
@@ -23,12 +27,10 @@ const Saved = () => {
     return (
       <Swipeable
         renderRightActions={renderRightActions}
-        onSwipeableOpen={() => handleUnliked(item.product_id)}
+        onSwipeableOpen={() => handleUnliked(item.id)}
       >
         <ProductCardHorizontal
           item={item}
-          onHeartPress={() => handleUnliked(item.product_id)}
-          isLiked={isInWishlist(item.product_id)}
         />
       </Swipeable>
     );
@@ -40,10 +42,10 @@ const Saved = () => {
       <FlatList
         data={wishlistItems}
         contentContainerStyle={styles.container}
-        keyExtractor={(item: any) => String(item.product_id)}
+        keyExtractor={(item: any) => String(item.id ?? item.product_id ?? item._id)}
         renderItem={renderItem}
         refreshing={false}
-        onRefresh={() => {}}
+        onRefresh={() => { }}
         numColumns={1}
         ItemSeparatorComponent={() => null}
         ListEmptyComponent={

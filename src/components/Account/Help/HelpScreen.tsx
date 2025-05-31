@@ -3,9 +3,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import CommonHeader from '../../../navigation/Header/CommonHeader'
 import { images } from '../../../assets/assets'
 import Colors from '../../../assets/colors'
-import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue'
-
-
 
 interface Message {
     id: string;
@@ -21,26 +18,13 @@ const HelpScreen = () => {
     const flatListRef = useRef<FlatList>(null);
 
     useEffect(() => {
-        // İlk yüklemede API'den eski mesajları al
         fetchMessages();
-
-        // Eğer WebSocket ile çalışacaksan, burada bağlantıyı kur
-        // setupWebSocket();
     }, []);
 
     const fetchMessages = async () => {
         try {
-            // Burada bir API isteği yapılacak
-            // const response = await fetch('https://api.example.com/messages');
-            // const data = await response.json();
-
             const data: Message[] = [
                 { id: '1', text: 'Hello, good morning.', sender: 'other', time: '10:41 pm' },
-                { id: '2', text: 'I am a Customer Service, is there anything I can help you with?', sender: 'other', time: '10:41 pm' },
-                { id: '3', text: 'Hi, I\'m having problems with my order & payment.', sender: 'me', time: '10:50 pm' },
-                { id: '4', text: 'Can you help me?', sender: 'me', time: '10:50 pm' },
-                { id: '5', text: 'Of course...', sender: 'other', time: '10:51 pm' },
-                { id: '6', text: 'Can you tell me the problem you are having? so I can help solve it', sender: 'other', time: '10:51 pm' },
             ];
 
             setMessages(data);
@@ -54,29 +38,48 @@ const HelpScreen = () => {
 
         const newMessage: Message = {
             id: Date.now().toString(),
-            
             text: input,
             sender: 'me',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
-        // Ekranda anında göster
+
         setMessages(prev => [newMessage, ...prev]);
         setInput('');
 
         try {
-            // Burada API'ye gönder
-            // await fetch('https://api.example.com/sendMessage', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify(newMessage),
-            // });
+            const response = await fetch('https://shopal.expozy.co/customer-service', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ message: input }),
+            });
 
-            // Eğer WebSocket kullanıyorsan burada gönder
-            // socket.emit('newMessage', newMessage);
+            if (!response.ok) {
+                throw new Error('API hatası');
+            }
+
+            const data = await response.json();
+
+            // Burada objeden "response" stringini alıyoruz
+            const replyText = data.response;
+
+            const replyMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                text: replyText,
+                sender: 'other',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            };
+
+            setMessages(prev => [replyMessage, ...prev]);
+
         } catch (error) {
-            console.error('Failed to send message', error);
+            console.error('Mesaj gönderilemedi:', error);
         }
     };
+
+
 
     const renderItem = ({ item }: { item: Message }) => (
         <View style={[
@@ -115,7 +118,7 @@ const HelpScreen = () => {
                 title='Help'
                 icon={images.phone}
                 onPress={handleCall}
-                page='goBack'  
+                page='goBack'
             />
             <View style={styles.divider} />
             <KeyboardAvoidingView

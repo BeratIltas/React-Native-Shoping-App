@@ -50,17 +50,17 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onLoginNavigate }) => {
     }
 
     try {
-      await signup(email, password, displayName);
+      const createdUser = await signup(email, password, displayName);
 
-      if (!user) {
+      if (!createdUser) {
         throw new Error('User not found after signup');
       }
 
       try {
         const response = await axios.post('https://shopal.expozy.co/new-users', {
-          id: user.uid,
-          email_address: user.email,
-          phone_number: '55555555',
+          id: createdUser.uid,
+          email_address: createdUser.email,
+          phone_number: '5555555',
           password: "sssss",
         });
 

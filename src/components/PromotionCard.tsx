@@ -45,17 +45,18 @@ const PromotionCard: React.FC<Props> = ({ item }) => {
   const randomColors = useMemo(() => getRandomGradient(), []);
 
 
-const parseCategories = (categoriesStr: string | undefined): string[] => {
-  if (!categoriesStr) return [];
-  try {
-    const fixedStr = categoriesStr.replace(/'/g, '"').trim();
-    return JSON.parse(fixedStr);
-  } catch (error) {
-    console.warn("Kategori parse hatası:", error);
-    return [];
-  }
-};
+  const parseCategories = (categoriesStr: string | undefined): string[] => {
+    if (!categoriesStr) return [];
+    try {
+      const fixedStr = categoriesStr.replace(/'/g, '"').trim();
+      return JSON.parse(fixedStr);
+    } catch (error) {
+      console.warn("Kategori parse hatası:", error);
+      return [];
+    }
+  };
 
+  const categoriesArray = parseCategories(item.category);
 
   return (
     <TouchableOpacity
@@ -81,10 +82,11 @@ const parseCategories = (categoriesStr: string | undefined): string[] => {
         </View>
         <View style={styles.leftSection}>
           <Text style={[styles.brandText, typography.Body1]}>
-            {item.brand === "Unknown"
-              ? item.category.charAt(0).toUpperCase() + item.category.slice(1)
-              : item.brand.charAt(0).toUpperCase() + item.brand.slice(1)}
+            {categoriesArray[2] === "Unknown"
+              ? item.brand.charAt(0).toUpperCase() + item.brand.slice(1)
+              : categoriesArray[2]}
           </Text>
+
         </View>
 
         <View style={styles.imageWrapper}>

@@ -8,7 +8,6 @@ import ProductsPage from "../screens/ProductsPage";
 import Search from "../screens/Search";
 import Cart from "../screens/Cart";
 import Checkout from "../screens/Checkout";
-import { RootStackParamList } from "../../type";
 import HelpScreen from "../components/Account/Help/HelpScreen";
 import ProfileScreen from "../components/Account/ProfileScreen";
 import Account from "../screens/Account";
@@ -19,6 +18,7 @@ import NotificationsScreen from "../components/Account/Notification/Notification
 import ReviewsScreen from "../components/ReviewsScreen";
 import OrdersScreen from "../components/Account/MyOrders/OrdersScreen";
 import OrderDetailsScreen from "../components/Account/MyOrders/OrderDetailsScreen";
+import { RootStackParamList } from "../../type";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -44,7 +44,6 @@ const AppNavigator = () => {
       <Stack.Screen name="HelpScreen" component={HelpScreen} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
 
-      
 
     </Stack.Navigator>
   );

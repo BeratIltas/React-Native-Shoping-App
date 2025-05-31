@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Dimensions, StyleSheet, ScrollView, TouchableOpacity, ToastAndroid, Platform } from 'react-native'; // ToastAndroid ve Platform eklendi
 import CommonHeader from '../navigation/Header/CommonHeader';
-import { ProductDetailProps, ProductProps, RootStackParamList } from '../../type';
+import { RootStackParamList } from '../../type';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import { images } from '../assets/assets';
@@ -14,10 +14,25 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import ExpandableSection from '../components/ExpandableSection';
 
 const { width, height } = Dimensions.get('window');
+type MetaDataItem = {
+  [key: string]: string;
+};
+
+type ProductPropsDetail = {
+  product_id: number;
+  title: string;
+  price: number;
+  categories: string[];
+  merchant_name: string;
+  average_rating: number;
+  rating_count: number;
+  meta_data: MetaDataItem[];
+  product_images: string[];
+};
 
 const ProductDetails = ({ route }: any) => {
   const _id = route?.params?.product_id;
-  const [productData, setProductsData] = useState<ProductDetailProps | null>(null);
+  const [productData, setProductsData] = useState<ProductPropsDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [productsArray, setProductsArray] = useState([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
@@ -48,6 +63,7 @@ const ProductDetails = ({ route }: any) => {
         merchant_name: json.merchant_name,
         average_rating: json.average_rating,
         rating_count: json.rating_count,
+        meta_data: json.meta_data,
         product_images: json.product_images,
       });
     } catch (error) {
@@ -127,6 +143,26 @@ const ProductDetails = ({ route }: any) => {
               <Text style={styles.description} >{productData?.title}</Text>
             </View>
             <View style={styles.divider} />
+            <ExpandableSection title="Product Details">
+              <View style={styles.metaDataContainer}>
+                {productData?.meta_data?.map((item, index) => {
+                  const key = Object.keys(item)[0];
+                  const value = item[key];
+                  return (
+                    <View key={index} style={styles.metaDataItem}>
+                      <Text style={styles.metaDataKey}>{key}:</Text>
+                      <Text style={styles.metaDataValue}>{value}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </ExpandableSection>
+            <View style={styles.divider} />
+
+
+            <AdviceProduct productIds={productData?.product_id} />
+            <View style={styles.divider} />
+
             <ExpandableSection title="Shipping Info">
               <Text style={{ fontSize: 15, lineHeight: 22, paddingBottom: 10, color: "#555" }}>
                 Your order will be shipped within 3-5 business days. Tracking
@@ -140,8 +176,6 @@ const ProductDetails = ({ route }: any) => {
               </Text>
             </ExpandableSection>
             <View style={styles.divider} />
-            <AdviceProduct productIds={productData?.product_id} />
-
           </ScrollView>
 
           <View style={styles.addToCartContainer}>
@@ -264,7 +298,37 @@ const styles = StyleSheet.create({
   cardIcon: {
     height: 30,
     width: 30,
-  }
+  },
+  metaDataContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: Colors.white,
+    gap: 8,
+  },
+  metaDataItem: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 10,
+  },
+  metaDataKey: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: Colors.black,
+    width: 120,
+  },
+  metaDataValue: {
+    fontSize: 14,
+    color: Colors.mediumGray,
+    flexShrink: 1,
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    paddingBottom: 8,
+    color: Colors.black,
+  },
+
+
 });
 
 

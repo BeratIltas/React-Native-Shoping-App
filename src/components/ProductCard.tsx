@@ -25,21 +25,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const liked = isInWishlist(item.product_id);
 
   useEffect(() => {
-    // Kalp animasyonunu ürün wishlist'teyse baştan dolu göster
     if (liked) {
-      lottieRef.current?.play(66, 66); // Liked frame'e atla
+      lottieRef.current?.play(900, 900);
     } else {
-      lottieRef.current?.play(0, 0); // Başlangıç frame'i (boş kalp)
+      lottieRef.current?.play(0, 0);
     }
   }, [liked]);
 
   const handleHeartPress = async () => {
     if (liked) {
       await removeFromWishlist(item.product_id);
-      lottieRef.current?.play(66, 0); // Unlike animasyonu
+      lottieRef.current?.play(66, 0);
     } else {
       await addToWishlist(item.product_id);
-      lottieRef.current?.play(0, 66); // Like animasyonu
+      lottieRef.current?.play(0, 66);
     }
   };
 
