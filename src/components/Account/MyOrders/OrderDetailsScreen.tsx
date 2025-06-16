@@ -83,7 +83,14 @@ const OrderDetailsScreen = ({ route }: any) => {
             setLoading(false);
         }
     };
-
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "pending": return Colors.green;
+            case "delivered": return Colors.orange;
+            case "cancelled": return Colors.red;
+            default: return Colors.gray;
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -93,11 +100,11 @@ const OrderDetailsScreen = ({ route }: any) => {
                 <View style={{ flexDirection: "row", gap: 10, justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: "row", gap: 5 }}>
                         <Text style={styles.label}>Status:</Text>
-                        <Text style={[styles.value, { color: Colors.green }]}>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</Text>
+                        <Text style={[styles.value, { color: getStatusColor(order.status) }]}>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</Text>
 
                     </View>
                     <View style={styles.topInfo}>
-                        <Text style={styles.date}>{order.created_at}</Text>
+                        <Text style={styles.date}>{order.created_at.slice(0, -16)}</Text>
                     </View>
                 </View>
 
@@ -168,8 +175,8 @@ const OrderDetailsScreen = ({ route }: any) => {
                     <Text style={styles.infoLabel} numberOfLines={1} ellipsizeMode="tail">Total Amount:</Text>
                     <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">{order.total_price}</Text>
                 </View>
-                <TouchableOpacity onPress={() => cancelOrder()}>
-                    <Text>Cancel</Text>
+                <TouchableOpacity style={{ marginBottom: 100 }} onPress={() => cancelOrder()}>
+                    <Text style={styles.cancelBtn}>Cancel Order</Text>
                 </TouchableOpacity>
             </ScrollView>
             <TouchableOpacity style={styles.helpBtn} onPress={() => navigation.navigate('HelpScreen')}>
@@ -303,6 +310,17 @@ const styles = StyleSheet.create({
     messageText: {
         color: 'white',
         fontSize: 16,
+    },
+    cancelBtn: {
+        color: "white",
+        marginTop: 20,
+        textAlign: "left",
+        alignSelf: "flex-end",
+        borderWidth: 1,
+        borderColor: "red",
+        backgroundColor:"#ff4040",
+        padding:7,
+        borderRadius:20,
     },
     helpBtn: {
         flexDirection: 'row',

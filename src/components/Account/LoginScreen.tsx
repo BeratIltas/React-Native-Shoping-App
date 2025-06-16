@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#B210FF',     // Mor tonlarında gölge rengi
+    shadowColor: '#B210FF',
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,

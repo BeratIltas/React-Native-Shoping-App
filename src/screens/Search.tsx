@@ -1,113 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View, FlatList, StyleSheet, Dimensions, TouchableOpacity, Image
-} from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/Search/SearchBar';
-import RecentSearches from '../components/Search/RecentSearches';
 import { images } from '../assets/assets';
 import { RootStackParamList } from '../../type';
-
-const { height } = Dimensions.get('window');
-
+import { useRecentSearch } from '../components/Search/RecentSearchContext ';
 
 const SearchScreen = () => {
+  const [productsArray, setProductsArray] = useState<any[]>([]);
+  const { recentSearches, clearSearches, removeSearch } = useRecentSearch();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const [query, setQuery] = useState('');
-  const [productsArray, setProductsArray] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  const loadRecentSearches = async () => {
-    try {
-      const storedSearches = await AsyncStorage.getItem('recentSearches');
-      if (storedSearches) {
-        setRecentSearches(JSON.parse(storedSearches));
-      }
-    } catch (error) {
-      console.error('Error loading recent searches:', error);
-    }
-  };
-
-  const saveRecentSearch = async (newSearch: string) => {
-    if (!newSearch.trim()) return;
-    try {
-      const updatedSearches = [newSearch, ...recentSearches.filter((item) => item !== newSearch)];
-      setRecentSearches(updatedSearches);
-      await AsyncStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
-    } catch (error) {
-      console.error('Error saving recent search:', error);
-    }
-  };
-
-  const loadProductsFromStorage = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('productData');
-      if (storedData) {
-        setProductsArray(JSON.parse(storedData));
-      }
-    } catch (error) {
-      console.log('Error fetching data from storage:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadProductsFromStorage();
-    loadRecentSearches();
-  }, []);
-
-  const filteredProducts = query
-    ? productsArray.filter((product: any) =>
-        product?.title?.toLowerCase().includes(query.toLowerCase())
-      )
-    : [];
-
-  const handleHeartPress = (productId: string) => {
-    setLikedProducts((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
-
-  const renderItem = ({ item }: { item: any }) => (
-    <ProductCard
-      item={item}
-    />
+  const renderRecentSearchItem = ({ item }: { item: string }) => (
+    <View style={styles.searchItem}>
+      <TouchableOpacity style={styles.searchTextContainer} onPress={() => setProductsArray([])}>
+        <Text style={styles.searchText}>{item}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => removeSearch(item)} style={styles.deleteButton}>
+        <Image source={images.deleteIcon} style={styles.deleteIcon} />
+      </TouchableOpacity>
+    </View>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('MainApp')}>
-          <Image source={images.leftArrow} style={styles.image} />
+      <View style={{ flexDirection: "row", alignItems: "center" }} >
+        <TouchableOpacity onPress={() => navigation.navigate('MainApp')} style={styles.cancelButton}>
+          <Image source={images.leftArrow}></Image>
         </TouchableOpacity>
-        <SearchBar query={query} setQuery={setQuery} saveRecentSearch={saveRecentSearch} />
+        <View style={{ flex: 1 }}>
+          <SearchBar setResults={setProductsArray} />
+        </View>
+
       </View>
 
-      {query === '' ? (
-        <RecentSearches
-          recentSearches={recentSearches}
-          clearSearches={() => setRecentSearches([])}
-          removeSearchItem={(item: string) => setRecentSearches(recentSearches.filter((search) => search !== item))}
-        />
-      ) : isLoading ? (
-        <Loader />
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          keyExtractor={(item: any) => String(item._id)}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContainer}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapper}
-          removeClippedSubviews={false}
 
+      {productsArray.length > 0 ? (
+        <FlatList
+          data={productsArray}
+          removeClippedSubviews={true}
+          keyExtractor={(item) => String(item.product_id)}
+          renderItem={({ item }) => <ProductCard item={item} />}
+          numColumns={2}
         />
+      ) : (
+        <View style={styles.recentSearchContainer}>
+          <View style={styles.header}>
+            <Text style={[styles.headerText]}>Recent Searches</Text>
+            <TouchableOpacity onPress={clearSearches}>
+              <Text style={styles.clearAllText}>Clear all</Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={recentSearches}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderRecentSearchItem}
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+            removeClippedSubviews={true}
+          />
+        </View>
       )}
     </View>
   );
@@ -119,22 +76,57 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  searchContainer: {
+  cancelButton: {
+    paddingLeft:10,
+    paddingVertical: 10,
+    alignSelf: 'flex-end',
+  },
+  recentSearchContainer: {
+    marginHorizontal: 16,
+    marginVertical: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.black,
+  },
+  clearAllText: {
+    color: Colors.orange,
+    fontSize: 14,
+  },
+  list: {
+    paddingBottom: 16,
+  },
+  searchItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,    
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginVertical: 6,
+    backgroundColor: Colors.whiteGray,
+    borderRadius: 10,
   },
-  image: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-
+  searchTextContainer: {
+    flex: 1,
   },
-  listContainer: {
-    paddingBottom: 100,
+  searchText: {
+    fontSize: 16,
+    color: Colors.black,
   },
-  columnWrapper: {
-    justifyContent: 'flex-start',
+  deleteButton: {
+    marginLeft: 10,
+  },
+  deleteIcon: {
+    width: 20,
+    height: 20,
+    tintColor: Colors.lightGray,
   },
 });
 

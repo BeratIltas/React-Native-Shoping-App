@@ -1,25 +1,60 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';
-const SearchBar = ({ query, setQuery, saveRecentSearch }: any) => (
-  <View style={styles.searchContainer}>
-    <Image source={images.searchIcon} style={styles.searchIcon} />
-    <TextInput
-      value={query}
-      onChangeText={setQuery}
-      onBlur={() => saveRecentSearch(query)}
-      placeholder="Search for products..."
-      placeholderTextColor={Colors.lightGray}
-      style={[styles.searchInput, typography.Body2Regular]}
-    />
-    <TouchableOpacity onPress={() => setQuery('')}>
-      <Image source={images.deleteIcon} style={styles.deleteIcon} />
-    </TouchableOpacity>
+import { useRecentSearch } from './RecentSearchContext ';
 
-  </View>
-);
+const API_BASE_URL = "https://shopal.expozy.co";
+
+const SearchBar = ({ setResults }: { setResults: React.Dispatch<React.SetStateAction<any[]>> }) => {
+  const [query, setQuery] = useState('');
+  const { addSearch } = useRecentSearch();
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchProductsByCategory = async (category: string) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/filter-product`, { params: { category } });
+      setResults(response.data.products || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const handleSearch = (text: string) => {
+    setQuery(text);
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      if (text.trim()) {
+        fetchProductsByCategory(text);
+        addSearch(text);
+      }
+    }, 500);
+  };
+
+
+  return (
+    <View style={styles.searchContainer}>
+      <Image source={images.searchIcon} style={styles.searchIcon} />
+      <TextInput
+        value={query}
+        onChangeText={handleSearch}
+        placeholder="Search for products..."
+        placeholderTextColor={Colors.lightGray}
+        style={[styles.searchInput, typography.Body2Regular]}
+      />
+      <TouchableOpacity onPress={() => setQuery('')}>
+        <Image source={images.deleteIcon} style={styles.deleteIcon} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 
 const styles = StyleSheet.create({
   searchContainer: {
@@ -38,7 +73,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
-
   },
   searchIcon: {
     width: 20,
@@ -52,7 +86,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
   },
-  deleteIcon:{
+  deleteIcon: {
     tintColor: Colors.gray,
   },
 });

@@ -16,7 +16,7 @@ import { useAuth } from '../components/Account/AuthContext'
 const Checkout = () => {
     const [query, setQuery] = useState<string>("");
     const [discount, setDiscount] = useState<string>("0");
-    const { cartItems, totalPrice } = useCart();
+    const { cartItems, totalPrice, clearCart } = useCart();
     const shippingFee = "50";
     const total = totalPrice - Number(discount) + Number(shippingFee);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -53,6 +53,8 @@ const Checkout = () => {
             });
 
             Alert.alert("Success", "Cart items purchased successfully!");
+            clearCart()
+            navigation.navigate('MainApp');
             console.log("Buy Cart Response:", response.data);
         } catch (error: any) {
             console.error("Error buying cart items:", error.response?.data || error.message);
@@ -177,7 +179,7 @@ const Checkout = () => {
             </TouchableWithoutFeedback>
 
             {!isKeyboardVisible && (
-                <TouchableOpacity style={styles.orderButton} onPress={()=>handleBuyCartItems(userId!)}>
+                <TouchableOpacity style={styles.orderButton} onPress={() => handleBuyCartItems(userId!)}>
                     <Text style={[styles.addText, typography.Body1Medium]}>Place Order</Text>
                 </TouchableOpacity>
             )}

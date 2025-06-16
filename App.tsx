@@ -21,6 +21,8 @@ import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
 import { Notifications } from './src/navigation/Notifications';
 import { WishlistProvider } from './src/components/Wishlist/WishlistContext';
+import { RecentSearchProvider } from './src/components/Search/RecentSearchContext ';
+import { PurchaseProvider } from './src/components/CustomRow/TshirtContext';
 
 
 
@@ -41,11 +43,15 @@ const RootContent = () => {
         <WishlistProvider>
           <PaymentCardProvider>
             <AddressProvider>
-              <GestureHandlerRootView>
-                <NavigationContainer>
-                  <AppNavigator />
-                </NavigationContainer>
-              </GestureHandlerRootView>
+              <RecentSearchProvider>
+                <PurchaseProvider>
+                  <GestureHandlerRootView>
+                    <NavigationContainer>
+                      <AppNavigator />
+                    </NavigationContainer>
+                  </GestureHandlerRootView>
+                </PurchaseProvider>
+              </RecentSearchProvider>
             </AddressProvider>
           </PaymentCardProvider>
         </WishlistProvider>

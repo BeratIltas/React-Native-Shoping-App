@@ -40,7 +40,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await fetch(`${API_BASE_URL}/cart?user_id=${userId}`);
 
       if (response.status === 404) {
-        // Sepet yok, boş set et
         setCartItems([]);
         return;
       }

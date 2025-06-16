@@ -12,9 +12,9 @@ const { height } = Dimensions.get('window');
 type Props = {
   item: {
     product_id: number;
-    product_name: string;
+    product_name?: string;
     price: number;
-    product_image: string[];
+    product_image?: string[];
     quantity?: number;
     total?: number;
   };

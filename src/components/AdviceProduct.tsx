@@ -6,7 +6,7 @@ import { useAuth } from './Account/AuthContext';
 import axios from 'axios';
 
 type AdviceProductProps = {
-  productIds: string[]| number| undefined;
+  productIds: string[] | number | undefined;
 };
 
 const AdviceProduct: React.FC<AdviceProductProps> = ({ productIds }) => {
@@ -55,7 +55,7 @@ const AdviceProduct: React.FC<AdviceProductProps> = ({ productIds }) => {
   return (
     <View style={styles.container}>
       <Text style={[typography.Header4, styles.categoryHeader]}>
-        Suggestions for {user?.displayName ?? 'you'}
+        Suggestions for {user?.displayName ? user.displayName.charAt(0).toUpperCase() + user.displayName.slice(1) : 'You'}
       </Text>
       <FlatList
         data={recommendedProducts}

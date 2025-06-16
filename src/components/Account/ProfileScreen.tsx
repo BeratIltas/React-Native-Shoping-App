@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileScreen: React.FC = () => {
-  const { user, logout, updateProfile, profilePhoto  } = useAuth();
+  const { user, logout, updateProfile, profilePhoto } = useAuth();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -24,7 +24,7 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
- const pickFromGallery = () => {
+  const pickFromGallery = () => {
     const options: ImageLibraryOptions = {
       mediaType: 'photo',
       quality: 1,
@@ -63,7 +63,6 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={[typography.Header2, styles.title]}>My Profile</Text>
 
       <View style={styles.uppContainer}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -83,7 +82,7 @@ const ProfileScreen: React.FC = () => {
       <View style={styles.downContainer}>
         <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate("OrdersScreen")}>
           <View style={styles.optionContainerLeft}>
-            <Image source={images.myOrders} />
+            <Image style={{ width: 24, height: 24 }} source={images.myOrders} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>My Orders</Text>
           </View>
           <Image source={images.rightArrow} />
@@ -93,7 +92,7 @@ const ProfileScreen: React.FC = () => {
 
         <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate("Addresses")} >
           <View style={styles.optionContainerLeft}>
-            <Image source={images.addressBook} />
+            <Image style={{ width: 24, height: 24 }} source={images.addressBook} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Address Book</Text>
           </View>
           <Image source={images.rightArrow} />
@@ -103,7 +102,7 @@ const ProfileScreen: React.FC = () => {
 
         <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate('PaymentMethods')}>
           <View style={styles.optionContainerLeft}>
-            <Image source={images.paymentMethods} />
+            <Image style={{ width: 24, height: 24 }} source={images.paymentMethods} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Payment Methods</Text>
           </View>
           <Image source={images.rightArrow} />
@@ -113,7 +112,7 @@ const ProfileScreen: React.FC = () => {
 
         <TouchableOpacity style={styles.optionContainers} onPress={() => navigation.navigate("NotificationsScreen")} >
           <View style={styles.optionContainerLeft}>
-            <Image source={images.bell} />
+            <Image style={{ width: 24, height: 24 }} source={images.bell} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Notifications</Text>
           </View>
           <Image source={images.rightArrow} />
@@ -124,7 +123,7 @@ const ProfileScreen: React.FC = () => {
         <TouchableOpacity style={styles.optionContainers}
           onPress={() => navigation.navigate("HelpScreen")}>
           <View style={styles.optionContainerLeft}>
-            <Image source={images.headPhones} />
+            <Image style={{ width: 24, height: 24 }} source={images.headPhones} />
             <Text style={[typography.Body1Regular, styles.subTitle]}>Help</Text>
           </View>
           <Image source={images.rightArrow} />
@@ -136,6 +135,7 @@ const ProfileScreen: React.FC = () => {
 
       <TouchableOpacity onPress={handleLogout} style={styles.logOut}>
         <Text style={styles.logOutText}>Logout</Text>
+        <Image style={{ width: 24, height: 24, tintColor: "white" }} source={images.LogOut} />
       </TouchableOpacity>
       <Modal
         transparent={true}
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   uppContainer: {
+    paddingTop: 50,
     flex: 1,
     flexDirection: 'row',
     height: '20%',
@@ -218,6 +219,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 35,
   },
   logOut: {
+    flexDirection: "row",
     backgroundColor: Colors.orange,
     justifyContent: 'center',
     alignItems: 'center',
@@ -226,6 +228,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 8,
     marginBottom: 20,
+    gap:10,
   },
   logOutText: {
     color: Colors.white,

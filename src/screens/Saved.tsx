@@ -7,6 +7,7 @@ import ProductCardHorizontal from '../components/ProductCardHorizontal';
 import { useWishlist } from '../components/Wishlist/WishlistContext';
 import { ProductProps } from '../../type';
 import { images } from '../assets/assets';
+import typography from '../assets/typography';
 
 
 const Saved = () => {
@@ -49,8 +50,12 @@ const Saved = () => {
         numColumns={1}
         ItemSeparatorComponent={() => null}
         ListEmptyComponent={
-          <View style={{ alignItems: 'center', marginTop: 50 }}>
-            <Text style={{ color: Colors.black, fontSize: 16 }}>No saved items.</Text>
+          <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 200 }}>
+            <Image source={images.FullHeart}></Image>
+            <Text style={[{ color: Colors.black, fontWeight: 700 }, typography.Header4]}>No Saved Items!</Text>
+            <Text style={[{ textAlignVertical: 'center', textAlign: 'center', paddingHorizontal: 70 }, typography.Body1Regular]} numberOfLines={2} ellipsizeMode="tail">
+              You don’t have any saved items. Go to home and add some.
+            </Text>
           </View>
         }
       />
@@ -61,7 +66,8 @@ const Saved = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.whiteGray,
-    paddingBottom: 100,
+    flex: 1,
+    paddingBottom:320,
   },
   deleteContainer: {
     backgroundColor: '#ff3b30',

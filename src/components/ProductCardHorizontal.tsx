@@ -5,6 +5,7 @@ import typography from '../assets/typography';
 import Colors from '../assets/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from './Cart/CartContext';
+import { images } from '../assets/assets';
 
 const { height } = Dimensions.get('window');
 
@@ -14,6 +15,7 @@ type ProductCardProps = {
     name: string;
     price: number;
     product_image: string[];
+    average_rating: number;
   };
 };
 
@@ -21,7 +23,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const navigation: any = useNavigation();
   const addToCardRef = useRef<LottieView | null>(null);
   const { addToCart } = useCart();
-
   const handleAddToCart = () => {
     if (addToCardRef.current) {
       addToCardRef.current.play(0, 75);
@@ -55,6 +56,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             >
               {item.name}
             </Text>
+            <View style={styles.starContainer}>
+              <Image source={images.star} style={{ height: 15, width: 15}} />
+              <Text style={{ flex: 1, textAlign: "left" }}>{item.average_rating?.toFixed(1) ?? "0.0"} </Text>
+            </View>
             <Text style={[typography.Body2, styles.price]}>
               ${item.price.toFixed(2)}
             </Text>
@@ -81,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
 const styles = StyleSheet.create({
   productViewContainer: {
-    height: height * 0.15,  // %22'den %15'e düşürdüm
+    height: height * 0.15,
     paddingHorizontal: 10,
     marginVertical: 5,
   },
@@ -121,7 +126,12 @@ const styles = StyleSheet.create({
   productDetailText: {
     flex: 1,
     paddingRight: 8,
-    gap:20,
+    gap: 2,
+  },
+  starContainer: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
   },
   productName: {
     fontWeight: '600',
@@ -135,7 +145,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   addToCartButton: {
-    width: 40, 
+    width: 40,
     height: 40,
     borderRadius: 20,
     backgroundColor: Colors.orange,

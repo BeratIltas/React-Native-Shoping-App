@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { images } from '../../../assets/assets';
 import Colors from '../../../assets/colors';
+import axios from 'axios';
 
 interface Props {
     visible: boolean;
@@ -25,11 +26,26 @@ const CommentModal: React.FC<Props> = ({ visible, onClose, product_name, product
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(5);
 
-    const handleSend = () => {
-        console.log('Yıldız:', rating ,'Yorum:', comment, 'productid',product_id);
-        setComment('');
-        setRating(5);
-        onClose();
+    const handleSend = async () => {
+        try {
+            const response = await axios.post('https://shopal.expozy.co/api/v1/comments/create', {
+                product_id: product_id,
+                comment: comment,
+                star: rating
+            });
+
+            console.log('Başarıyla gönderildi:', response.data);
+            setComment('');
+            setRating(5);
+            onClose();
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Hata:', error.message);
+            } else {
+                console.error('Bilinmeyen hata:', error);
+            }
+        }
+
     };
 
     return (
@@ -41,7 +57,7 @@ const CommentModal: React.FC<Props> = ({ visible, onClose, product_name, product
         >
             <TouchableWithoutFeedback onPress={onClose}>
                 <View style={styles.overlay}>
-                    <TouchableWithoutFeedback onPress={() => {  }}>
+                    <TouchableWithoutFeedback onPress={() => { }}>
                         <View style={styles.bottomSheet}>
                             <Text style={styles.title}>Leave a review for:</Text>
                             <Text style={styles.productName}>{product_name}</Text>

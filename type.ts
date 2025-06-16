@@ -23,7 +23,9 @@ export type RootStackParamList = {
     ReviewsScreen:{ productId?: number };
     OrdersScreen:undefined;
     OrderDetailsScreen:{ orderId?: number};
-    TshirtCustomizer:undefined;
+    TShirtCustomizer:undefined;
+    CustomizeOrders:undefined;
+    FashionRecommendationScreen:undefined;
 }
 export type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 

@@ -12,6 +12,7 @@ import { useCart } from '../components/Cart/CartContext';
 import typography from '../assets/typography';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import ExpandableSection from '../components/ExpandableSection';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 type MetaDataItem = {
@@ -34,40 +35,41 @@ const ProductDetails = ({ route }: any) => {
   const _id = route?.params?.product_id;
   const [productData, setProductsData] = useState<ProductPropsDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [productsArray, setProductsArray] = useState([]);
-  const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
   const addToCardRef = useRef<LottieView | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const { addToCart } = useCart();
 
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`https://shopal.expozy.co/product-info/${_id}`, {
+
+      const response = await axios.get('https://shopal.expozy.co/product-info', {
+        params: {
+          product_id:_id,
+        },
         headers: {
           'Accept': 'application/json',
-        }
+        },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const json = await response.json();
+      const data = response.data;
 
       setProductsData({
-        product_id: json.product_id,
-        title: json.title,
-        price: json.price,
-        categories: json.categories,
-        merchant_name: json.merchant_name,
-        average_rating: json.average_rating,
-        rating_count: json.rating_count,
-        meta_data: json.meta_data,
-        product_images: json.product_images,
+        product_id: data.product_id,
+        title: data.title,
+        price: data.price,
+        categories: data.categories,
+        merchant_name: data.merchant_name,
+        average_rating: data.average_rating,
+        rating_count: data.rating_count,
+        meta_data: data.meta_data,
+        product_images: data.product_images,
       });
+
     } catch (error) {
-      console.error('Error fetching product details:', error);
+      console.error('Ürün detayları alınırken hata oluştu:', error);
     } finally {
       setIsLoading(false);
     }
@@ -110,6 +112,11 @@ const ProductDetails = ({ route }: any) => {
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
                 style={{ width: width, height: height / 2 }}
+                onScroll={(e) => {
+                  const index = Math.round(e.nativeEvent.contentOffset.x / width);
+                  setCurrentImageIndex(index);
+                }}
+                scrollEventThrottle={16}
               >
                 {productData?.product_images?.map((imgUrl: string, index: number) => (
                   <Image
@@ -119,6 +126,18 @@ const ProductDetails = ({ route }: any) => {
                   />
                 ))}
               </ScrollView>
+              <View style={styles.dotsContainer}>
+                {productData?.product_images?.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      currentImageIndex === index ? styles.activeDot : null,
+                    ]}
+                  />
+                ))}
+              </View>
+
 
             </View>
             <View style={styles.detailsContainer}>
@@ -236,8 +255,26 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+  dotsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 8,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#ccc',
+  },
+  activeDot: {
+    backgroundColor: Colors.orange,
+  },
+
   detailsContainer: {
     padding: 20,
+    paddingTop: 10,
     backgroundColor: Colors.white,
     gap: 10,
   },

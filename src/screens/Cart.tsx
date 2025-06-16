@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { useCart } from '../components/Cart/CartContext';
 import ProductCardHorizontalCart from '../components/ProductCardHorizontalCart';
@@ -7,9 +7,14 @@ import TotalCart from '../components/Cart/TotalCart';
 import CommonHeader from '../navigation/Header/CommonHeader';
 import AdviceProduct from '../components/AdviceProduct';
 import { images } from '../assets/assets';
+import Colors from '../assets/colors';
 
 const Cart = () => {
   const { cartItems, totalPrice, clearCart } = useCart();
+
+  useEffect(() => {
+  }, [cartItems]);
+
 
   return (
     <View style={styles.container}>
@@ -18,14 +23,11 @@ const Cart = () => {
         <EmptyCart />
       ) : (
         <FlatList
-          data={cartItems}
+          data={[...cartItems]}
           renderItem={({ item }) => <ProductCardHorizontalCart item={item} />}
           keyExtractor={(item) => item.product_id.toString()}
           contentContainerStyle={{ paddingBottom: 120 }}
         />
-
-
-
       )}
       <View style={styles.totalCartContainer}>
         <TotalCart />
@@ -37,7 +39,10 @@ const Cart = () => {
 export default Cart;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor:Colors.whiteGray
+  },
   totalCartContainer: {
     position: 'absolute',
     bottom: 0,

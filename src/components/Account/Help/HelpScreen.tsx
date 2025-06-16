@@ -62,7 +62,6 @@ const HelpScreen = () => {
 
             const data = await response.json();
 
-            // Burada objeden "response" stringini alıyoruz
             const replyText = data.response;
 
             const replyMessage: Message = {

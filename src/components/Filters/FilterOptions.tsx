@@ -10,12 +10,14 @@ interface FilterOptionsProps {
     onPriceChange: (price: number[]) => void;
     priceRange: number[];
     setModalVisible: (visible: boolean) => void;
+    setProductsArray: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const FilterOptions: React.FC<FilterOptionsProps> = ({
     onSort,
     onPriceChange,
     priceRange,
+    setProductsArray,
 }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string>("most_reviewed");
@@ -27,7 +29,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
     return (
         <View style={styles.container}>
             <View style={styles.searchBar}>
-                <SearchBar />
+                <SearchBar setResults={setProductsArray} />
             </View>
             <View style={styles.itemContainer}>
                 <TouchableOpacity onPress={toggleModal}>

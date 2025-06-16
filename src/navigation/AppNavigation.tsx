@@ -19,14 +19,17 @@ import ReviewsScreen from "../components/ReviewsScreen";
 import OrdersScreen from "../components/Account/MyOrders/OrdersScreen";
 import OrderDetailsScreen from "../components/Account/MyOrders/OrderDetailsScreen";
 import { RootStackParamList } from "../../type";
+import TShirtCustomizer from "../components/CustomRow/TShirtCustomizer";
+import CustomizeOrders from "../components/CustomRow/CustomizeOrders";
+import FashionRecommendationScreen from "../components/CustomRow/FashionRecommendationScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="Intro" component={Intro} />
-      <Stack.Screen name="Onboarding" component={Onboarding} /> */}
+      <Stack.Screen name="Intro" component={Intro} />
+      <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="MainApp" component={BottomTabNavigator} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="ProductsPage" component={ProductsPage} />
@@ -43,7 +46,9 @@ const AppNavigator = () => {
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       <Stack.Screen name="HelpScreen" component={HelpScreen} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-
+      <Stack.Screen name="TShirtCustomizer" component={TShirtCustomizer} />
+      <Stack.Screen name="CustomizeOrders" component={CustomizeOrders} />
+      <Stack.Screen name="FashionRecommendationScreen" component={FashionRecommendationScreen} />
 
     </Stack.Navigator>
   );

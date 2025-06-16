@@ -80,6 +80,7 @@ const ProductsPage = ({ route }: any) => {
                 onPriceChange={setPriceRange}
                 priceRange={priceRange}
                 setModalVisible={setModalVisible}
+                setProductsArray={setProductsArray}
             />
 
             {isLoading ? (
