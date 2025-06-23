@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
 export type ProductProps = {
-  id: number;
+  product_id: number;
   name: string;
   price: number;
   product_image: string[];
@@ -20,7 +20,6 @@ const API_BASE_URL = 'https://shopal.expozy.co';
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState<ProductProps[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
-
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged((user) => {
       if (user) {
@@ -95,7 +94,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const isInWishlist = (product_id: number): boolean => {
-    return wishlistItems.some((item) => item.id === product_id);
+    return wishlistItems.some((item) => item.product_id === product_id);
   };
 
   return (

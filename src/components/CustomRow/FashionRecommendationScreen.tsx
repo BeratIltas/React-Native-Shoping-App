@@ -60,7 +60,7 @@ const FashionRecommendationScreen = () => {
         try {
             const res = await axios.post('https://shopal.expozy.co/fashion_recommendation', {
                 user_input: input,
-                name: user?.displayName,
+                name: user?.displayName || 'Guest',
                 user_budget_segment: 'medium',
             });
 
@@ -75,7 +75,7 @@ const FashionRecommendationScreen = () => {
             const itemDetails = await Promise.all(
                 items.map(async (item: RecommendationItem) => {
                     const infoRes = await axios.get(
-                        `https://shopal.expozy.co/product-info/?product_name=${encodeURIComponent(item.name)}`
+                        `https://shopal.expozy.co/product-info/?product_name=${(item.name)}`
                     );
                     return infoRes.data;
                 })

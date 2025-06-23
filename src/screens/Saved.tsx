@@ -12,7 +12,6 @@ import typography from '../assets/typography';
 
 const Saved = () => {
   const { wishlistItems, removeFromWishlist, isInWishlist } = useWishlist();
-
   const handleUnliked = async (productId: number) => {
     await removeFromWishlist(productId);
     console.log(productId)
@@ -28,7 +27,7 @@ const Saved = () => {
     return (
       <Swipeable
         renderRightActions={renderRightActions}
-        onSwipeableOpen={() => handleUnliked(item.id)}
+        onSwipeableOpen={() => handleUnliked(item.product_id)}
       >
         <ProductCardHorizontal
           item={item}
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.whiteGray,
     flex: 1,
-    paddingBottom:320,
+    paddingBottom: 320,
   },
   deleteContainer: {
     backgroundColor: '#ff3b30',

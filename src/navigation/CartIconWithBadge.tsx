@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { images } from '../assets/assets';
 import Colors from '../assets/colors';
-import { useCart } from '../components/Cart/CartContext'; // veya senin cart context'in yeri
+import { useCart } from '../components/Cart/CartContext';
 
 type CartIconWithBadgeProps = {
     focused: boolean;
@@ -12,7 +12,6 @@ const CartIconWithBadge: React.FC<CartIconWithBadgeProps> = ({ focused }) => {
     const { cartItems } = useCart();
     const itemCount = cartItems.length;
 
-    // Eğer sekme seçili ise siyah, değilse gri
     const iconColor = focused ? '#000' : '#888';
 
     return (

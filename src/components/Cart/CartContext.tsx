@@ -2,8 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import { ProductProps } from '../../../type';
 
-
-
 type CartContextType = {
   cartItems: ProductProps[];
   addToCart: (product_item_id: number) => Promise<void>;
@@ -62,8 +60,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCartItems([]);
     }
   };
-
-
 
   useEffect(() => {
     fetchCart();

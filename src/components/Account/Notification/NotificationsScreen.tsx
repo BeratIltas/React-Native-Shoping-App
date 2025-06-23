@@ -13,26 +13,6 @@ type Notification = {
   receivedAt: string;
 };
 
-// const fakeNotifications: Notification[] = [
-//   {
-//     id: '1',
-//     title: 'Welcome!',
-//     body: 'Thank you for signing up to our app.',
-//     receivedAt: '2025-05-18 10:00',
-//   },
-//   {
-//     id: '2',
-//     title: 'Update',
-//     body: 'New features have been added, check them out now!',
-//     receivedAt: '2025-05-17 18:30',
-//   },
-//   {
-//     id: '3',
-//     title: 'Reminder',
-//     body: 'Don’t forget to update your profile.',
-//     receivedAt: '2025-05-16 09:15',
-//   },
-// ];
 
 const ForegroundNotificationsScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);

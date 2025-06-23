@@ -31,12 +31,10 @@ const TShirtCustomizer = () => {
     const [isResizing, setIsResizing] = useState(false);
     const [isRotating, setIsRotating] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
-    const [isCapturing, setIsCapturing] = useState(false); // Yeni state eklendi
+    const [isCapturing, setIsCapturing] = useState(false);
     const viewShotRef = useRef<ViewShot>(null);
     const [imageUri, setImageUri] = useState<string | null>(null);
     const { buyProduct } = usePurchase();
-
-    // Döndürme için gerekli değişkenler
     const [initialDistance, setInitialDistance] = useState(0);
     const [initialAngle, setInitialAngle] = useState(0);
     const [gestureStartAngle, setGestureStartAngle] = useState(0);
@@ -83,28 +81,24 @@ const TShirtCustomizer = () => {
         });
     };
 
-    // İki nokta arasındaki mesafeyi hesapla
     const getDistance = (touch1: any, touch2: any) => {
         const dx = touch1.pageX - touch2.pageX;
         const dy = touch1.pageY - touch2.pageY;
         return Math.sqrt(dx * dx + dy * dy);
     };
 
-    // İki nokta arasındaki açıyı hesapla
     const getAngle = (touch1: any, touch2: any) => {
         const dx = touch1.pageX - touch2.pageX;
         const dy = touch1.pageY - touch2.pageY;
         return Math.atan2(dy, dx) * 180 / Math.PI;
     };
 
-    // Açıyı normalize et
     const normalizeAngle = (angle: number) => {
         while (angle < 0) angle += 360;
         while (angle >= 360) angle -= 360;
         return angle;
     };
 
-    // Sürükleme ve döndürme için PanResponder
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -126,7 +120,6 @@ const TShirtCustomizer = () => {
 
             onPanResponderMove: (evt, gestureState) => {
                 if (evt.nativeEvent.touches.length === 1 && !isResizing && !isRotating) {
-                    // Tek parmak - sürükleme
                     const paddingLeft = screenWidth * 0.25;
                     const paddingRight = screenWidth * 0.18;
                     const paddingTop = screenHeight * 0.18;
@@ -150,7 +143,6 @@ const TShirtCustomizer = () => {
 
                     setImagePosition({ x: newX, y: newY });
                 } else if (evt.nativeEvent.touches.length === 2 && isRotating) {
-                    // İki parmak - döndürme
                     const touch1 = evt.nativeEvent.touches[0];
                     const touch2 = evt.nativeEvent.touches[1];
 
@@ -169,7 +161,6 @@ const TShirtCustomizer = () => {
         })
     ).current;
 
-    // Boyutlandırma için PanResponder
     const resizeResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -231,7 +222,7 @@ const TShirtCustomizer = () => {
     const handleShare = async () => {
         try {
             setIsSharing(true);
-            setIsCapturing(true); // Ekran görüntüsü alımı başladı
+            setIsCapturing(true);
 
             if (viewShotRef.current && typeof viewShotRef.current.capture === "function") {
                 const uri = await viewShotRef.current.capture();
@@ -249,13 +240,13 @@ const TShirtCustomizer = () => {
             Alert.alert("Error", "An error occurred while sharing the image.");
         } finally {
             setIsSharing(false);
-            setIsCapturing(false); // Ekran görüntüsü alımı bitti
+            setIsCapturing(false);
         }
     };
 
     const handleBuyFromImage = async () => {
         try {
-            setIsCapturing(true); // Ekran görüntüsü alımı başladı
+            setIsCapturing(true);
             let uri = "";
 
             if (viewShotRef.current && typeof viewShotRef.current.capture === "function") {
@@ -272,17 +263,16 @@ const TShirtCustomizer = () => {
                 price: 149.99,
             };
 
-            buyProduct(newPurchase); // context fonksiyonu
+            buyProduct(newPurchase);
             Alert.alert("Success", "Your custom T-shirt has been added to purchases!");
         } catch (e) {
             console.error("Failed to buy from image:", e);
             Alert.alert("Error", "Could not complete purchase.");
         } finally {
-            setIsCapturing(false); // Ekran görüntüsü alımı bitti
+            setIsCapturing(false); 
         }
     };
 
-    // Kontrollerin gizlenmesi gerekip gerekmediğini kontrol eden değişken
     const hideControls = isSharing || isCapturing;
 
     return (
@@ -320,7 +310,6 @@ const TShirtCustomizer = () => {
                                         opacity: (isDragging || isRotating) ? 0.8 : 1,
                                         elevation: (isDragging || isRotating) ? 8 : 4,
                                         shadowOpacity: (isDragging || isRotating) ? 0.3 : 0.2,
-                                        // Ekran görüntüsü alımı sırasında border'ı gizle
                                         borderWidth: hideControls ? 0 : 2,
                                         transform: [{ rotate: `${imageRotation}deg` }],
                                     },
@@ -333,7 +322,6 @@ const TShirtCustomizer = () => {
                                     resizeMode="cover"
                                 />
 
-                                {/* Ekran görüntüsü alımı sırasında kontrol butonlarını gizle */}
                                 {!hideControls && (
                                     <>
                                         <View
@@ -372,7 +360,6 @@ const TShirtCustomizer = () => {
                 </View>
             </ViewShot>
 
-            {/* Ekran görüntüsü alımı sırasında kontrol butonlarını gizle */}
             {!hideControls && (
                 <View style={styles.controls}>
                     <TouchableOpacity

@@ -60,7 +60,6 @@ const LoginScreen: React.FC<{ onSignupNavigate: () => void }> = ({ onSignupNavig
         ) : null}
 
         <View style={styles.inputContainer}>
-          {/* E-Mail */}
           <View style={[styles.inputWrapper, touched.email && email.trim() === '' && styles.inputError]}>
             <TextInput
               style={styles.input}
@@ -73,7 +72,6 @@ const LoginScreen: React.FC<{ onSignupNavigate: () => void }> = ({ onSignupNavig
             />
           </View>
 
-          {/* Password */}
           <View style={[styles.inputWrapper, touched.password && password.trim() === '' && styles.inputError]}>
             <TextInput
               style={[styles.input, styles.passwordInput]}

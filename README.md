@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="src/assets/AppPoster.png" alt="App Poster" width="500"/>
+</p>
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started

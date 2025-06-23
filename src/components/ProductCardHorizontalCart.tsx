@@ -105,7 +105,7 @@ export default ProductCardHorizontalCart;
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.18, // Eskisi 0.22
+    height: height * 0.18,
     paddingHorizontal: 10,
     marginVertical: 4,
     backgroundColor: Colors.whiteGray,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontWeight: '600',
-    fontSize: 15, // Eskisi 17
+    fontSize: 15,
     color: Colors.black,
   },
   trashWrapper: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   price: {
     color: Colors.black,
-    fontSize: 16, // Eskisi 18
+    fontSize: 16,
     fontWeight: '700',
   },
   quantityWrapper: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   quantityBtn: {
     borderWidth: 0.5,
     borderRadius: 5,
-    padding: 4, // Eskisi 6
+    padding: 4,
     marginHorizontal: 4,
     backgroundColor: Colors.white,
     elevation: 2,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     tintColor: Colors.black,
   },
   quantityText: {
-    fontSize: 16, // Eskisi 16
+    fontSize: 16,
     fontWeight: '600',
     minWidth: 18,
     textAlign: 'center',

@@ -69,7 +69,11 @@ const ReviewsScreen = ({ route }: any) => {
     <View style={styles.reviewItem}>
       <View style={styles.starRow}>
         {Array.from({ length: item.rate }).map((_, i) => (
-          <Image key={i} source={images.star} style={styles.starIcon} />
+          <Image
+            key={`${item.id}-star-${i}`}
+            source={images.star}
+            style={styles.starIcon}
+          />
         ))}
       </View>
       <Text style={styles.comment}>{item.comment}</Text>

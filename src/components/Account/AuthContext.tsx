@@ -64,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await userCredential.user.reload();
       const currentUser = auth.currentUser;
       setUser(currentUser);
-      return currentUser; // 🔁 return eklenmeli
+      return currentUser;
     } catch (error) {
       console.error('Signup error:', error);
       throw error;

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import axios from 'axios';
 import Colors from '../assets/colors';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
@@ -30,7 +29,7 @@ const SearchScreen = () => {
     <View style={styles.container}>
       <View style={{ flexDirection: "row", alignItems: "center" }} >
         <TouchableOpacity onPress={() => navigation.navigate('MainApp')} style={styles.cancelButton}>
-          <Image source={images.leftArrow}></Image>
+          <Image style={{height:24,width:24,marginLeft:10,}} source={images.leftArrow}></Image>
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <SearchBar setResults={setProductsArray} />

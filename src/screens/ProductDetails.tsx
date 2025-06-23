@@ -15,9 +15,7 @@ import ExpandableSection from '../components/ExpandableSection';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
-type MetaDataItem = {
-  [key: string]: string;
-};
+
 
 type ProductPropsDetail = {
   product_id: number;
@@ -27,32 +25,25 @@ type ProductPropsDetail = {
   merchant_name: string;
   average_rating: number;
   rating_count: number;
-  meta_data: MetaDataItem[];
+  meta_data: { [key: string]: string }[];
   product_images: string[];
 };
 
 const ProductDetails = ({ route }: any) => {
-  const _id = route?.params?.product_id;
+  const product_id = route?.params?.product_id;
   const [productData, setProductsData] = useState<ProductPropsDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const addToCardRef = useRef<LottieView | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  console.log('Route params:', route?.params);
+  console.log('Product ID:', product_id);
   const { addToCart } = useCart();
 
   const getData = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
-      const response = await axios.get('https://shopal.expozy.co/product-info', {
-        params: {
-          product_id:_id,
-        },
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
+      const response = await axios.get(`https://shopal.expozy.co/product-info/?product_id=${product_id}`);
 
       const data = response.data;
 
@@ -67,16 +58,19 @@ const ProductDetails = ({ route }: any) => {
         meta_data: data.meta_data,
         product_images: data.product_images,
       });
-
-    } catch (error) {
-      console.error('Ürün detayları alınırken hata oluştu:', error);
+    } catch (error: any) {
+      console.error('Axios Error:', error.message || error);
     } finally {
       setIsLoading(false);
     }
   };
+
+
+
   useEffect(() => {
+    console.log("Product ID:", product_id);
     getData();
-  }, [_id]);
+  }, []);
 
   const handleShare = async () => {
     if (!productData) return;
@@ -166,7 +160,7 @@ const ProductDetails = ({ route }: any) => {
               <View style={styles.metaDataContainer}>
                 {productData?.meta_data?.map((item, index) => {
                   const key = Object.keys(item)[0];
-                  const value = item[key];
+                  const value = key ? item[key] : "";
                   return (
                     <View key={index} style={styles.metaDataItem}>
                       <Text style={styles.metaDataKey}>{key}:</Text>
@@ -179,7 +173,7 @@ const ProductDetails = ({ route }: any) => {
             <View style={styles.divider} />
 
 
-            <AdviceProduct productIds={productData?.product_id} />
+            <AdviceProduct productIds={product_id} />
             <View style={styles.divider} />
 
             <ExpandableSection title="Shipping Info">

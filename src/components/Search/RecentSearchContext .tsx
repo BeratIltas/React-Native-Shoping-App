@@ -13,7 +13,6 @@ const RecentSearchContext = createContext<RecentSearchContextType | undefined>(u
 export const RecentSearchProvider = ({ children }: { children: React.ReactNode }) => {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // AsyncStorage'dan geçmişi yükleme
   useEffect(() => {
     const loadRecentSearches = async () => {
       try {
@@ -28,21 +27,18 @@ export const RecentSearchProvider = ({ children }: { children: React.ReactNode }
     loadRecentSearches();
   }, []);
 
-  // Yeni aramaları ekleme ve kaydetme
   const addSearch = async (search: string) => {
     const updatedSearches = [search, ...recentSearches.filter((item) => item !== search)].slice(0, 10);
     setRecentSearches(updatedSearches);
     await AsyncStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
   };
 
-  // Belirli bir aramayı silme
   const removeSearch = async (search: string) => {
     const updatedSearches = recentSearches.filter((item) => item !== search);
     setRecentSearches(updatedSearches);
     await AsyncStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
   };
 
-  // Tüm geçmişi temizleme
   const clearSearches = async () => {
     setRecentSearches([]);
     await AsyncStorage.removeItem('recentSearches');

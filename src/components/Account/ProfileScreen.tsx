@@ -7,7 +7,6 @@ import { images } from '../../assets/assets';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../../type';
 import { launchImageLibrary, launchCamera, ImageLibraryOptions, CameraOptions } from 'react-native-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileScreen: React.FC = () => {

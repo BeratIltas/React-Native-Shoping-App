@@ -3,9 +3,7 @@ import LottieView from "lottie-react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Colors from "../assets/colors";
 import { RootStackParamList } from "../../type";
-import messaging from '@react-native-firebase/messaging';
-import { useEffect } from "react";
-import notifee, { AndroidImportance } from '@notifee/react-native';
+
 
 const { height, width } = Dimensions.get('window');
 

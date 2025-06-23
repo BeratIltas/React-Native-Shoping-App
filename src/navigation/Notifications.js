@@ -10,9 +10,9 @@ export const Notifications = async () => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('🔔 Bildirim izni verildi:', authStatus);
+      console.log('Bildirim izni verildi:', authStatus);
     } else {
-      console.log('🚫 Bildirim izni verilmedi.');
+      console.log('Bildirim izni verilmedi.');
     }
 
     await notifee.createChannel({
@@ -22,7 +22,7 @@ export const Notifications = async () => {
     });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('🎯 Foreground mesajı alındı:', remoteMessage);
+      console.log('Foreground mesajı alındı:', remoteMessage);
 
       await notifee.displayNotification({
         title: remoteMessage.notification?.title,
@@ -36,6 +36,6 @@ export const Notifications = async () => {
 
     return unsubscribe;
   } catch (error) {
-    console.log('❌ setupNotifications hatası:', error);
+    console.log('setupNotifications hatası:', error);
   }
 };

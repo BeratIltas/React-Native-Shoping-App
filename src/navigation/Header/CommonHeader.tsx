@@ -28,7 +28,7 @@ const CommonHeader = ({
     const handleNavigation = () => {
         if (page) {
             if (page === 'goBack') {
-                navigation.goBack();  // Eğer page 'goBack' ise geri git
+                navigation.goBack();
             } else {
                 navigation.navigate({
                     name: page,

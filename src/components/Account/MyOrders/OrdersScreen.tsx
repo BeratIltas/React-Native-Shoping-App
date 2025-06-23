@@ -10,7 +10,7 @@ import { useAuth } from "../AuthContext";
 import { usePurchase } from "../../CustomRow/TshirtContext";
 
 const tabs = ["pending", "custom", "cancelled", "delivered"];
-//pending, paid, cancelled, shipped, delivered
+//pending, paid, cancelled, shipped, delivered apideki türler
 
 const OrdersScreen = () => {
     const [activeTab, setActiveTab] = useState("pending");

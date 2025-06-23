@@ -9,7 +9,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import { useAuth } from './AuthContext'; // Context API'den kullanıcı durumu erişimi
+import { useAuth } from './AuthContext';
 import Colors from '../../assets/colors';
 import typography from '../../assets/typography';
 import { images } from '../../assets/assets';

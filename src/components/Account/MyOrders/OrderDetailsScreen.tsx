@@ -78,7 +78,7 @@ const OrderDetailsScreen = ({ route }: any) => {
             setCancelMessage('Siparişiniz iptal edilmiştir');
         } catch (e: any) {
             console.error('Cancel order error:', e);
-            setCancelMessage('Sipariş iptali başarısız oldu'); // İstersen hata mesajı da gösterebilirsin
+            setCancelMessage('Sipariş iptali başarısız oldu');
         } finally {
             setLoading(false);
         }
@@ -135,14 +135,12 @@ const OrderDetailsScreen = ({ route }: any) => {
                     )}
                     scrollEnabled={false}
                     removeClippedSubviews={false}
-
                 />
                 <CommentModal
                     visible={commentModalVisible}
                     onClose={() => setCommentModalVisible(false)}
                     product_name={selectedItem?.product_name}
                     product_id={selectedItem?.product_id}
-
                 />
                 <Text style={styles.sectionTitle}>Order information</Text>
 

@@ -11,7 +11,7 @@ const { height } = Dimensions.get('window');
 
 type ProductCardProps = {
   item: {
-    id: number;
+    product_id: number;
     name: string;
     price: number;
     product_image: string[];
@@ -26,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const handleAddToCart = () => {
     if (addToCardRef.current) {
       addToCardRef.current.play(0, 75);
-      addToCart(item.id);
+      addToCart(item.product_id);
     }
   };
 
@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
         style={styles.productView}
         onPress={() =>
           navigation.navigate('ProductDetails', {
-            _id: item.id,
+            product_id: item.product_id,
           })
         }
       >
